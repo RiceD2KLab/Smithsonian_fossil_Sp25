@@ -17,8 +17,6 @@ annotations_df.count
 file_annotation_counts = annotations_df.groupby("file_name").size().reset_index(name="row_count")
 
 
-
-
 # TODO change based on area calculation
 # get area per annotation + add as column
 def calculate_area(row):
