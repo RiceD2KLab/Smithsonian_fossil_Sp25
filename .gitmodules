@@ -1,0 +1,3 @@
+[submodule "external/ndpi_tile_cropper"]
+	path = external/ndpi_tile_cropper
+	url = https://github.com/paleopollen/ndpi-tile-cropper-cli.git
