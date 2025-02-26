@@ -1,16 +1,17 @@
 import pandas as pd
 import numpy as np
-import os
 
 # get csv to pd
 annotations_df = pd.read_csv('/projects/dsci435/smithsonian_sp25/data/all_annotations.csv')
+
 
 #############################################################
 ########################## OVERALL ##########################
 #############################################################
 
+
 # how many annotations do we have? 
-annotations_df.count
+annotations_df.shape
 
 
 # number of annotations per slide
@@ -32,6 +33,7 @@ annotations_df["area"] = annotations_df.apply(calculate_area, axis=1)
 
 # what percentage of data are we using? 
 
+annotations_df["pol_type"].unique()
 
 # Sum annotation areas per file
 file_annotation_area = annotations_df.groupby("file_name")["annotation_area"].sum().reset_index()
@@ -40,5 +42,7 @@ file_annotation_area = annotations_df.groupby("file_name")["annotation_area"].su
 #############################################################
 ########################## BY POLLEN ########################
 #############################################################
+
+# distribution of diff pollen types
 
 
