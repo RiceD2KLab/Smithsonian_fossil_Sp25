@@ -12,6 +12,10 @@ files = os.listdir(path)  # Returns both files and directories
 file_idx = 0
 num_files = len(files)
 
+# for looking at unlabelled
+# files = ["D5410_1_R_2024_02_0911_03_13_Utah.ndpi.ndpa", "Giraffe_24_2_43_R_Giraffe_2025_01_14_10_06_00.ndpi.ndpa"]
+
+
 # for each of the files, get annotation data
 for file_name in files:
     file_idx += 1
