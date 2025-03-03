@@ -1,6 +1,8 @@
 import xml.etree.ElementTree as ET
 import pandas as pd
 import csv
+import numpy as np
+
 
 # get the annotation csv
 annotations_df = pd.read_csv("/home/ak136/Smithsonian_fossil_Sp25/src/data_preprocessing/all_annotations.csv")
@@ -37,5 +39,19 @@ print("nunique pol_types AFTER lowercasing + replacement: %d" % annotations_df["
 print(annotations_df["pol_type"].unique())
 
 
+
+# get area per annotation + add as column
+def calculate_area(row):
+    return np.pi * (row["radius"] ** 2)
+annotations_df["area"] = annotations_df.apply(calculate_area, axis=1)
+
+
+annotations_df
+
+
+
 annotations_df.to_csv('/projects/dsci435/smithsonian_sp25/data/cleaned_annotations.csv', index=False)
 annotations_df.to_csv('/home/ak136/Smithsonian_fossil_Sp25/src/data_preprocessing/cleaned_annotations.csv', index=False)
+
+
+
