@@ -1,5 +1,8 @@
 # Smithsonian_fossil_Sp25
 
+## Introduction
+
+This repository hosts the code for an automated machine-learning pipeline designed to detect and classify palynomorphs (fossil pollen, spores, and other organic-walled microorganisms) from high-resolution NDPI (NanoZoomer Digital Pathology Image) files. 
 
 ## File Structure
 
