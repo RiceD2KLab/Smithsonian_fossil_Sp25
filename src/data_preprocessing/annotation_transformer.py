@@ -4,6 +4,7 @@ import os
 import csv
 import glob
 import json
+import openslide
 """
 path for current master annotation csv: /projects/dsci435/smithsonian_sp25/data/cleaned_annotations.csv
 all cropped tiles dir: /projects/dsci435/smithsonian_sp25/data/tile_imgs
@@ -35,7 +36,7 @@ EDITTTT use Numpy for this
 def get_args():
     parser = ArgumentParser(description="get args for tile cropper")
     parser.add_argument("--annotation_filepath", type=str, help="path to the master annotation file")
-    parser.add_argument("--annot_region_coords_dir", type=str, help="directory to all the tile crops for all .ndpi files")
+    parser.add_argument("--annot_region_tile_coords_dir", type=str, help="directory to all the tile crops for all .ndpi files")
     parser.add_argument("--output_dir", type=str, help="directory to save the annotation file with all tiles")
     parser.add_argument("--nm_to_px_ratio", type=float, help="the pixel to nanometer ratio")
     parser.add_argument("--tile_size", type=int, help="the side length (in pixels) of the square tile crop")
@@ -46,6 +47,7 @@ def get_args():
 This function reads necessary metadata for an inputted ndpi file
 
 inputs: 
+    - input_ndpi_file_path: absolute path to the ndpi file to read metadata for. 
 
 returns:
     - a two-element tuple: first element is the x coordinate (in nm) of the center of the ndpi file. Second element is the y coordiante (in nm) of the center of the ndpi file. 
@@ -56,18 +58,25 @@ returns:
     - mmpp_y: the millimeters per pixel in the y direction according to ndpi metadata
 """
 def read_ndpi_metadata(input_ndpi_file_path):
-    file_no_extension = os.path.splitext(os.path.basename(input_ndpi_file_path))[0]
-    metadata_path = f"/storage/hpc/work/dsci435/smithsonian_2/ndpi_metadatas/{file_no_extension}.json"
-    # Load JSON file
-    with open(metadata_path, 'r') as file:
-        metadata = json.load(file)
-    # somehow find a way to read in the metadata
-    ndpi_center_x = int(metadata["hamamatsu.XOffsetFromSlideCentre"])
-    ndpi_center_y =int(metadata["hamamatsu.YOffsetFromSlideCentre"])
-    mmpp_x = float(metadata["openslide.mpp-x"])
-    mmpp_y = float(metadata["openslide.mpp-y"])
-    ndpi_width_px = int(metadata["openslide.level[0].width"])
-    ndpi_height_px = int(metadata["openslide.level[0].height"])
+    slide = openslide.OpenSlide(input_ndpi_file_path)
+    ndpi_center_x = int(slide.properties["hamamatsu.XOffsetFromSlideCentre"])
+    ndpi_center_y =int(slide.properties["hamamatsu.YOffsetFromSlideCentre"])
+    mmpp_x = float(slide.properties["openslide.mpp-x"])
+    mmpp_y = float(slide.properties["openslide.mpp-y"])
+    ndpi_width_px = int(slide.properties["openslide.level[0].width"])
+    ndpi_height_px = int(slide.properties["openslide.level[0].height"])
+    # file_no_extension = os.path.splitext(os.path.basename(input_ndpi_file_path))[0]
+    # metadata_path = f"/storage/hpc/work/dsci435/smithsonian_2/ndpi_metadatas/{file_no_extension}.json"
+    # # Load JSON file
+    # with open(metadata_path, 'r') as file:
+    #     metadata = json.load(file)
+    # # somehow find a way to read in the metadata
+    # ndpi_center_x = int(metadata["hamamatsu.XOffsetFromSlideCentre"])
+    # ndpi_center_y =int(metadata["hamamatsu.YOffsetFromSlideCentre"])
+    # mmpp_x = float(metadata["openslide.mpp-x"])
+    # mmpp_y = float(metadata["openslide.mpp-y"])
+    # ndpi_width_px = int(metadata["openslide.level[0].width"])
+    # ndpi_height_px = int(metadata["openslide.level[0].height"])
 
     # convert ndpi width and height from pixels to nm
     ndpi_width_nm = mmpp_x * 1000 * ndpi_width_px
@@ -123,13 +132,6 @@ SUB-FUNCTIONS:
         Returns:
             - new_x: the translated x coordinate in the same unit as input x
             - new_y: the translated y coordinate in the same unit as input y
-    
-    - read_ndpi_image_size: reads the size of the ndpi image currently dealing with. 
-        Inputs: 
-            - input_ndpi_file_path: string representing the path to the input ndpi file. 
-        Returns: 
-            - ndpi_height: an integer representing the height of the ndpi file in pixels
-            - ndpi_width: an integer representing the width of the indpi file in pixels
 """
 def coordinate_transform(x, y, input_ndpi_file_path):
     def translation(x, y, horizontal_shift, vertical_shift):
@@ -197,13 +199,10 @@ def relative_location_in_tile():
     y = 0
     return x, y
 
-
-
-
 if __name__ == "__main__":
     args = get_args()
     master_annotation_filepath = args.annotation_filepath
-    annot_region_coords_dir = args.annot_region_coords_dir
+    annot_region_tile_coords_dir = args.annot_region_tile_coords_dir
     output_dir = args.output_dir
     nm_to_px_ratio = args.nm_to_px_ratio
     tile_size = args.tile_size
@@ -225,7 +224,7 @@ if __name__ == "__main__":
             print(ndpi)
             ndpi_without_extension = ndpi.removesuffix(".ndpi")
             print(ndpi_without_extension)
-            _, _, _, mmpp_x, mmpp_y = read_ndpi_metadata(f"/storage/hpc/work/dsci435/smithsonian_2/ndpi_metadatas/{ndpi_without_extension}.json")
+            _, _, _, mmpp_x, mmpp_y = read_ndpi_metadata(f"/storage/hpc/work/dsci435/smithsonian/ndpi_files/{ndpi}")
             nmpp_x = mmpp_x * 1000
             nmpp_y = mmpp_y * 1000
 
@@ -242,13 +241,10 @@ if __name__ == "__main__":
             c_x_px = c_x_nano_transformed // nmpp_x
             c_y_px = c_y_nano_transformed // nmpp_y
             
-            tile_list = annotation_tile_determiner(c_x_px, c_y_px, radius_px, ndpi, "/projects/dsci435/smithsonian_sp25/data/annotation_region_tile_coordinates")
+            tile_list = annotation_tile_determiner(c_x_px, c_y_px, radius_px, ndpi, annot_region_tile_coords_dir)
 
             for tile in tile_list:
                 # new_row = row + [str(tl), str(bl), str(tr), str(br), tile]
                 new_row = {**row, 'tl': str(tl), 'bl': str(bl), 'tr': str(tr), 'br': str(br), 'tile': tile}
                 writer.writerow(new_row)
         print(list_of_current_ndpis)
-
-
-

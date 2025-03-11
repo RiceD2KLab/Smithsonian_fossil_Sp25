@@ -8,22 +8,29 @@ import math
 import bioformats
 import javabridge
 import json
+import openslide
 
 
 """
 ndpi storage location: /storage/hpc/work/dsci435/smithsonian
 single usage
-usage: python3 cropper_runner.py --input_file_path /storage/hpc/work/dsci435/smithsonian/ndpi_files/D9151-A-2_L_2024_02_02_16_08_52_Texas.ndpi --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
+usage: python3 cropper_runner.py --input_file_path /storage/hpc/work/dsci435/smithsonian/ndpi_files/D9151-A-2_L_2024_02_02_16_08_52_Texas.ndpi --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
 
 whole directory usage
-usage: python3 cropper_runner.py --dir --ndpi_directory /storage/hpc/work/dsci435/smithsonian/ndpi_files --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
+usage: python3 cropper_runner.py --dir --ndpi_directory /storage/hpc/work/dsci435/smithsonian/ndpi_files --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
+
+for tile_coordinate extraction
+single usage:
+    python3 cropper_runner.py --tile_coord_extract --input_file_path /storage/hpc/work/dsci435/smithsonian/ndpi_files/D9151-A-2_L_2024_02_02_16_08_52_Texas.ndpi --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
 """
 
 def get_args():
     parser = ArgumentParser(description="get args for tile cropper")
-    parser.add_argument("--dir", action="store_true", help="more for running cropper on a whole directory")
+    parser.add_argument("--dir", action="store_true", help="flag for running cropper on a whole directory")
+    parser.add_argument("--tile_coord_extract", action="store_true", help="flag for whether we actually want to crop the tiles or if we just want to get the coordinates of tiles")
     parser.add_argument("--input_file_path", type=str, help="input ndpi file")
     parser.add_argument("--ndpi_directory", type=str, help="represents the directory to all the ndpis")
+    parser.add_argument("--annotations_directory", type=str, help="directory to all the annotations")
     parser.add_argument("--output_dir", type=str, help="output directory for tiles")
     parser.add_argument("--tile_overlap", type=int, help="pixel overlap amount")
     parser.add_argument("--tile_size", type=int, help="size of the tiles")
@@ -45,18 +52,26 @@ returns:
     - mmpp_y: the millimeters per pixel in the y direction according to ndpi metadata
 """
 def read_ndpi_metadata(input_ndpi_file_path):
-    file_no_extension = os.path.splitext(os.path.basename(input_ndpi_file_path))[0]
-    metadata_path = f"/storage/hpc/work/dsci435/smithsonian_2/ndpi_metadatas/{file_no_extension}.json"
-    # Load JSON file
-    with open(metadata_path, 'r') as file:
-        metadata = json.load(file)
-    # somehow find a way to read in the metadata
-    ndpi_center_x = int(metadata["hamamatsu.XOffsetFromSlideCentre"])
-    ndpi_center_y =int(metadata["hamamatsu.YOffsetFromSlideCentre"])
-    mmpp_x = float(metadata["openslide.mpp-x"])
-    mmpp_y = float(metadata["openslide.mpp-y"])
-    ndpi_width_px = int(metadata["openslide.level[0].width"])
-    ndpi_height_px = int(metadata["openslide.level[0].height"])
+    slide = openslide.OpenSlide(input_ndpi_file_path)
+    ndpi_center_x = int(slide.properties["hamamatsu.XOffsetFromSlideCentre"])
+    ndpi_center_y =int(slide.properties["hamamatsu.YOffsetFromSlideCentre"])
+    mmpp_x = float(slide.properties["openslide.mpp-x"])
+    mmpp_y = float(slide.properties["openslide.mpp-y"])
+    ndpi_width_px = int(slide.properties["openslide.level[0].width"])
+    ndpi_height_px = int(slide.properties["openslide.level[0].height"])
+
+    # file_no_extension = os.path.splitext(os.path.basename(input_ndpi_file_path))[0]
+    # metadata_path = f"/storage/hpc/work/dsci435/smithsonian_2/ndpi_metadatas/{file_no_extension}.json"
+    # # Load JSON file
+    # with open(metadata_path, 'r') as file:
+    #     metadata = json.load(file)
+    # # somehow find a way to read in the metadata
+    # ndpi_center_x = int(metadata["hamamatsu.XOffsetFromSlideCentre"])
+    # ndpi_center_y =int(metadata["hamamatsu.YOffsetFromSlideCentre"])
+    # mmpp_x = float(metadata["openslide.mpp-x"])
+    # mmpp_y = float(metadata["openslide.mpp-y"])
+    # ndpi_width_px = int(metadata["openslide.level[0].width"])
+    # ndpi_height_px = int(metadata["openslide.level[0].height"])
 
     # convert ndpi width and height from pixels to nm
     ndpi_width_nm = mmpp_x * 1000 * ndpi_width_px
@@ -83,8 +98,14 @@ def translation(x, y, horizontal_shift, vertical_shift):
 
 
 """
-inputs: x and y should be the nanozoomer coordinate locations (x and y should be in nanometers). 
-QUESTION: should we do //2 or /2 ? what if the width and height are not even numbers?
+This function perfrms a transformation on given points. 
+
+Inputs: 
+    - x and y should be the nanozoomer coordinate locations (x and y should be in nanometers). 
+    - input_ndpi_file_path: absolute path to the ndpi file in question. 
+Return:
+    - new_x: transformed x coordinate in nm
+    - new_y: transformed y coordinate in nm
 """
 def point_transformation(x, y, input_ndpi_file_path):
 
@@ -100,15 +121,16 @@ def point_transformation(x, y, input_ndpi_file_path):
 This function retrieves the bounds of the annotation region in nanometers. 
 Input: 
     - input_ndpi_file_path: string representing the absolute path to the input ndpi file.
+    - annotations_directory: string representing the directory to all the annotations
 Output:
     - min_x_nano: the top left x coordinate of the annotated region in nanometers 
     - min_y_nano: the top left y coordiante of the annotated region in nanometers
     - max_x_nano: the bottom right x coordinate of the annotated region in nanometers
     - max_y_nano: the bottom right y coordinate of the annotated region in nanometers
 """
-def annotation_region_bounds_retrieval(input_ndpi_file_path):
+def annotation_region_bounds_retrieval(input_ndpi_file_path, annotations_directory):
     file_no_extension = os.path.splitext(os.path.basename(input_ndpi_file_path))[0]
-    tree = ET.parse(f"/projects/dsci435/smithsonian_sp25/data/annotations/{file_no_extension}.ndpi.ndpa")
+    tree = ET.parse(f"{annotations_directory}/{file_no_extension}.ndpi.ndpa")
     root = tree.getroot()
     for viewstate in root.findall("ndpviewstate"):
         annotation = viewstate.find("annotation")
@@ -128,13 +150,13 @@ def annotation_region_bounds_retrieval(input_ndpi_file_path):
                 return min_x_nano, min_y_nano, max_x_nano, max_y_nano
                                 
 
-def run_ndpi_cropper_command(input_ndpi_file_path: str, output_dir: str, tile_overlap: int, tile_size: int):
+def run_ndpi_cropper_command(input_ndpi_file_path: str, annotations_directory: str, output_dir: str, tile_overlap: int, tile_size: int, tile_coord_extract:bool):
     """Runs the ndpi_tile_cropper CLI command with the given input file and outputs to a specified location."""
     _, _, _, mmpp_x, mmpp_y = read_ndpi_metadata(input_ndpi_file_path)
     nmpp_x = mmpp_x * 1000
     nmpp_y = mmpp_y * 1000
     
-    min_x_nano, min_y_nano, max_x_nano, max_y_nano = annotation_region_bounds_retrieval(input_ndpi_file_path)
+    min_x_nano, min_y_nano, max_x_nano, max_y_nano = annotation_region_bounds_retrieval(input_ndpi_file_path, annotations_directory)
     print("annotation region bounds below:")
     print(min_x_nano, min_y_nano, max_x_nano, max_y_nano)
 
@@ -152,9 +174,14 @@ def run_ndpi_cropper_command(input_ndpi_file_path: str, output_dir: str, tile_ov
     print(rsx, rsy, rex, rey)
 
     # Define the CLI command
+    file = ""
+    if tile_coord_extract:
+        file = "ndpi-tile-cropper-cli/src/tile_cropper_coordinate_extractor.py"
+    else:
+        file = "ndpi-tile-cropper-cli/src/ndpi_tile_cropper_cli.py"
     command = [
         "python",
-        "ndpi-tile-cropper-cli/src/ndpi_tile_cropper_cli.py",
+        file,
         "-i", input_ndpi_file_path,
         "-o", output_dir,
         "-l", str(tile_overlap),
@@ -180,17 +207,20 @@ def run_ndpi_cropper_command(input_ndpi_file_path: str, output_dir: str, tile_ov
 if __name__ == "__main__":
     args = get_args()
     directory_mode = args.dir
+    tile_coord_extract = args.tile_coord_extract
 
     javabridge.start_vm(class_path=bioformats.JARS, run_headless=True)
 
     if not directory_mode: # single ndpi file mode
         input_ndpi = args.input_file_path
+        annotations_directory = args.annotations_directory
         output_dir = args.output_dir
         tile_overlap = args.tile_overlap
         tile_size = args.tile_size
-        run_ndpi_cropper_command(input_ndpi, output_dir, tile_overlap, tile_size)
+        run_ndpi_cropper_command(input_ndpi, annotations_directory, output_dir, tile_overlap, tile_size, tile_coord_extract)
     else: # crop all the ndpis in a directory
         ndpi_directory = args.ndpi_directory
+        annotations_directory = args.annotations_directory
         output_dir = args.output_dir
         tile_overlap = args.tile_overlap
         tile_size = args.tile_size
@@ -200,7 +230,7 @@ if __name__ == "__main__":
             if ndpi_file.endswith(".ndpi"):
                 # run the tile cropper
                 ndpi_full_path = os.path.join(ndpi_directory, ndpi_file)
-                run_ndpi_cropper_command(ndpi_full_path, output_dir, tile_overlap, tile_size)
+                run_ndpi_cropper_command(ndpi_full_path, annotations_directory, output_dir, tile_overlap, tile_size, tile_coord_extract)
             file_num += 1
     
     javabridge.kill_vm()
