@@ -2,14 +2,7 @@
 
 
 ## Repository Structure
-
-## Installation
-# README
-
-## Introduction
-
-## Repository Structure
-### Organization of Code Structure
+. ├── setup.py # Project setup script ├── .gitignore # Ignored files for Git ├── external/ │ └── ndpi_tile_cropper/ # External submodule: ndpi_tile_cropper │ ├── README.md # Documentation for ndpi_tile_cropper │ ├── requirements.txt # Requirements for ndpi_tile_cropper │ ├── src/ │ │ ├── ndpi_tile_cropper_parallel_cli.py # Parallel CLI for NDPI tile cropping │ │ ├── ndpi_tile_cropper_cli.py # CLI script for ndpi tile cropping │ │ └── utils/ │ │ ├── reorganize_data_folder.py # Reorganizing data folder utility │ │ ├── download_data.py # Data download utility │ │ ├── processing_status.py # Process status utility ├── src/ │ ├── evaluation/ │ │ └── eval_temp.txt # Temporary evaluation file │ ├── data_preprocessing/ │ │ ├── eda.py # Exploratory data analysis script │ │ ├── annotations_to_csv.py # Convert annotations to CSV format │ │ ├── ndpi_to_png_tiles.py # Convert NDPI to PNG tiles │ │ ├── all_annotations.csv # All annotations in CSV format ├── scripts/ │ ├── parse_ndpa.py # Parse NDPA file script └── README.md # Project documentation
 
 ## Installation
 ### Python and Conda Installation
