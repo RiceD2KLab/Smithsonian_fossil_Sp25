@@ -18,7 +18,7 @@
 - **Krish Kabra**
 
 #### Sponsor:
-- **Dr. Ritwick Agrawal**
+- **Dr. Ingrid Romero**
 
 This repository hosts the code for an automated machine-learning pipeline designed to detect and classify palynomorphs (fossil pollen, spores, and other organic-walled microorganisms) from high-resolution NDPI (NanoZoomer Digital Pathology Image) files. 
 
