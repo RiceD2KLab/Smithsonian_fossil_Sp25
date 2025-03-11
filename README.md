@@ -102,3 +102,8 @@ python annotation_transformer.py --annotation_filepath /projects/dsci435/smithso
 
 ## Acknowledgments/Citations
 
+This project uses the [ndpi-tile-cropper-cli](https://github.com/paleopollen/ndpi-tile-cropper-cli) repository, which provides a command-line interface for cropping NDPI tiles. Special thanks to **Punyasena, S. W.**, & **Satheesan, S. P.** for their work.
+
+.
+
+
