@@ -36,3 +36,4 @@ subscription-manager==1.29.40
 systemd-python==234
 tzdata==2025.1
 urllib3==1.26.5
+openslide-python
