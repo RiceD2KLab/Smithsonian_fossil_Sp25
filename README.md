@@ -29,7 +29,7 @@ To tile an ndpi image, run /src/data_preprocessing/cropper_runner.py. cropper_ru
 Given that the ndpi imgs and the ndpa annotation files are stored in the structure specified in the data section, run following commands below to tile a directory of ndpi imgs. 
 
 ```
-cd /src/data_preprocessing
+cd src/data_preprocessing
 python cropper_runner.py --dir --ndpi_directory /storage/hpc/work/dsci435/smithsonian/ndpi_files --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /storage/hpc/work/dsci435/smithsonian/tiles --tile_overlap 660 --tile_size 2048
 ```
 
@@ -41,7 +41,7 @@ This step involves taking the annotation csv made previously, and adding feature
 
 Before performing the transformation of annotations, we must first retrieve the coordinates of each tile for each tiled ndpi img, in json format. The jsons will be stored in /projects/dsci435/smithsonian_sp25/data/annotation_region_tile_coordinates. To get these jsons, we can run the cropper_runner.py script as mentioned above, but add the `--tile_coord_extract` flag to the command line arguments. Below are the commands to run. 
 ```
-cd /src/data_preprocessing
+cd src/data_preprocessing
 python cropper_runner.py --dir --tile_coord_extract --ndpi_directory /storage/hpc/work/dsci435/smithsonian/ndpi_files --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /storage/hpc/work/dsci435/smithsonian/tiles --tile_overlap 660 --tile_size 2048
 ```
 Once the tile coordinates for each ndpi have been extracted, we can perform the transformation of annotations. To do so, run /src/data_preprocessing/annotation_transformer.py. annotation_transformer.py takes several command line arguments as defined below:
@@ -53,7 +53,7 @@ Once the tile coordinates for each ndpi have been extracted, we can perform the 
 ```
 Given that the ndpi imgs and the ndpa annotation files are stored in the structure specified in the data section, run following commands below to perform annotation transformation:
 ```
-cd /src/data_preprocessing
+cd src/data_preprocessing
 python annotation_transformer.py --annotation_filepath /projects/dsci435/smithsonian_sp25/data/cleaned_annotations.csv --annot_region_tile_coords_dir /projects/dsci435/smithsonian_sp25/data/annotation_region_tile_coordinates --output_dir /projects/dsci435/smithsonian_sp25/data --tile_size 2048
 ```
 
