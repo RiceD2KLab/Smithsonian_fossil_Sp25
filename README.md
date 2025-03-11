@@ -13,7 +13,8 @@
 
 ## Data Preprocessing
 
-### Creating a raw master annotations csv file from ndpa annoataion file data
+### Creating a master "raw" annotations csv file from ndpa annoataion file data
+AJ: insert instructions on how to run ndpa parser to get a master raw annotations csv file
 
 ### Tiling the ndpi image(s)
 To tile an ndpi image, run /src/data_preprocessing/cropper_runner.py. cropper_runner.py takes several command line arguments as defined below:
