@@ -13,7 +13,7 @@ nm_to_px_ratio: 229
 tile_size: 1024
 
 Usage: 
-python3 annotation_transformer.py --annotation_filepath /projects/dsci435/smithsonian_sp25/data/cleaned_annotations.csv --output_dir /projects/dsci435/smithsonian_sp25/data --nm_to_px_ratio 229 --tile_size 1024
+python3 annotation_transformer.py --annotation_filepath /projects/dsci435/smithsonian_sp25/data/cleaned_annotations.csv --annot_region_tile_coords_dir /projects/dsci435/smithsonian_sp25/data/annotation_region_tile_coordinates --output_dir /projects/dsci435/smithsonian_sp25/data --tile_size 2048
 
 
 How this code should work. 
@@ -38,7 +38,6 @@ def get_args():
     parser.add_argument("--annotation_filepath", type=str, help="path to the master annotation file")
     parser.add_argument("--annot_region_tile_coords_dir", type=str, help="directory to all the tile crops for all .ndpi files")
     parser.add_argument("--output_dir", type=str, help="directory to save the annotation file with all tiles")
-    parser.add_argument("--nm_to_px_ratio", type=float, help="the pixel to nanometer ratio")
     parser.add_argument("--tile_size", type=int, help="the side length (in pixels) of the square tile crop")
     args = parser.parse_args()
     return args
@@ -204,7 +203,6 @@ if __name__ == "__main__":
     master_annotation_filepath = args.annotation_filepath
     annot_region_tile_coords_dir = args.annot_region_tile_coords_dir
     output_dir = args.output_dir
-    nm_to_px_ratio = args.nm_to_px_ratio
     tile_size = args.tile_size
 
     list_of_current_ndpis = os.listdir("/storage/hpc/work/dsci435/smithsonian/ndpi_files")
