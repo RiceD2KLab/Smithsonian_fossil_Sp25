@@ -4,6 +4,31 @@
 ## Repository Structure
 
 ## Installation
+# README
+
+## Introduction
+
+## Repository Structure
+### Organization of Code Structure
+
+## Installation
+### Python and Conda Installation
+1. Clone the repository:
+   ```sh
+   git clone <repository_url>
+   cd <repository_name>
+   ```
+2. Install Python (recommended: version 3.9 or greater)
+3. Install Conda (if using virtual environments)
+4. Set up a virtual environment:
+   ```sh
+   conda create --name myenv python=3.9
+   conda activate myenv
+   ```
+5. Install dependencies from `requirements.txt`:
+   ```sh
+   pip install -r requirements.txt
+   ```
 
 ## Running the Scripts
 
