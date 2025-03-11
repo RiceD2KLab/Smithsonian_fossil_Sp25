@@ -22,6 +22,16 @@
 
 This repository hosts the code for an automated machine-learning pipeline designed to detect and classify palynomorphs (fossil pollen, spores, and other organic-walled microorganisms) from high-resolution NDPI (NanoZoomer Digital Pathology Image) files. 
 
+## Table of Contents
+- [Introduction](#introduction)
+- [File Structure](#file-structure)
+- [Installation](#installation)
+- [Running the Scripts](#running-the-scripts)
+- [Data](#data)
+- [Data Preprocessing](#data-preprocessing)
+- [Modeling](#modeling)
+- [Acknowledgments/Citations](#acknowledgmentscitations)
+
 ## File Structure
 
 
