@@ -5,7 +5,7 @@
 
 
 - `external/`
-  - [`ndpi_tile_cropper/`](https://github.com/paleopollen/ndpi-tile-cropper-cli)`          # External submodule: ndpi_tile_cropper 
+  - [`ndpi_tile_cropper/`](https://github.com/paleopollen/ndpi-tile-cropper-cli)          # External submodule: ndpi_tile_cropper 
 - `src/`
   - `evaluation/`
     - `eval_temp.txt`                   # Evaluation file
