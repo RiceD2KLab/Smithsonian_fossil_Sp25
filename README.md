@@ -1,6 +1,24 @@
 # Smithsonian_fossil_Sp25
 
 ## Introduction
+### Team Members
+
+#### Students:
+- **Aaeisha Baharun** (she/her)
+- **Audrey (AJ) Kim** (they/them)
+- **Jonathan Lee** (he/him)
+- **Andrew Ondara** (he/him)
+- **Izzy Sanchez** (he/him)
+- **Yuhan (Bruce) Wu** (he/him)
+
+#### Faculty Mentor:
+- **Dr. Arko Barman**
+
+#### PhD Mentor:
+- **Krish Kabra**
+
+#### Sponsor:
+- **Dr. Ritwick Agrawal**
 
 This repository hosts the code for an automated machine-learning pipeline designed to detect and classify palynomorphs (fossil pollen, spores, and other organic-walled microorganisms) from high-resolution NDPI (NanoZoomer Digital Pathology Image) files. 
 
