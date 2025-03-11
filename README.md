@@ -13,7 +13,9 @@
 
 ## Data Preprocessing
 
-### Tiling the .ndpi image(s)
+### Creating a raw master annotations csv file from ndpa annoataion file data
+
+### Tiling the ndpi image(s)
 To tile an ndpi image, run /src/data_preprocessing/cropper_runner.py. cropper_runner.py takes several command line arguments as defined below:
 ```
     --dir : a flag for running the cropper tool on a whole directory of ndpi imgs 
