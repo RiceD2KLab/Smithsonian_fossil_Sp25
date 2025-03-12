@@ -12,3 +12,4 @@ pytz==2025.1
 s3transfer==0.11.2
 six==1.17.0
 tzdata==2025.1
+urllib3==2.3.0
