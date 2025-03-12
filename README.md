@@ -103,6 +103,25 @@ cd src/data_preprocessing
 python cleaning.py
 ```
 
+### Exploratory Data Analysis
+In order to run the script generating visualizations and summarizations of our data, run the following commands:
+```
+cd src/data_preprocessing
+python eda.py
+```
+
+This step in the data science pipeline is to gain an understanding of the data we have, for example by understanding the distribution of categories and areas. 
+
+The script will output in the console the following information and visualizations:
+- Number of annotations
+- Pie chart of the proportion of annotations per palynomorph type
+- Histogram of the distribution of annotations per file
+- Histogram of the distribution of average area of palynomorph type
+- Box plot of the distribution of annotation areas per palynomorph type
+
+Through these visualizations, we noticed key insights about our data, such as the class imbalance of palynomorph types, with only two of the seven categories ("pollen" and "indeterminate") comprising over half of the labels. 
+
+
 ### Tiling the ndpi image(s)
 To tile an ndpi image, run `/src/data_preprocessing/cropper_runner.py`. cropper_runner.py takes several command line arguments as defined below:
 ```
