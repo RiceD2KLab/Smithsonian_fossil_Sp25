@@ -73,7 +73,7 @@ At this current state in the project:
 - ndpi files are stored in `/storage/hpc/work/smithsonian/ndpi_files`
 - ndpa annotation files are stored in `/projects/dsci435/smithsonian_sp25/data/annotations`
 
-Add info on EDA here. 
+Key insights about our data include that there is significant class imbalance of palynomorph types, with only two of the seven categories ("pollen" and "indeterminate") comprising over half of the labels. For information about running exploratory data analysis, please proceed to the Data Preprocessing > Exploratory Data Analysis section.
 
 
 ## Data Preprocessing (Still in progress)
@@ -94,7 +94,7 @@ Currently, the `annotations_to_csv.py` script outputs the resulting csv file in 
 
 Many of the annotations of the palynomorphs in our data are very specific. Because we are interested in only 7 broad categories of palynomorphs, we have been provided a dictionary of different specimen names and the category they belong to. The dictionary was provided to us by the Smithsonian as a csv file named `Dictionary_categories_NDPI_files.csv`. Using this, the `cleaning.py` script replaces the instances of specimen names to one of the seven categories, and stores them in the Github (and currently in NOTS as well). 
 
-The script also adds and populates a `radius` column to the csv. 
+The script also adds and populates an `area` column to the csv. 
 
 To run this script, use the following command:
 ```
@@ -117,8 +117,6 @@ The script will output in the console the following information and visualizatio
 - Histogram of the distribution of annotations per file
 - Histogram of the distribution of average area of palynomorph type
 - Box plot of the distribution of annotation areas per palynomorph type
-
-Through these visualizations, we noticed key insights about our data, such as the class imbalance of palynomorph types, with only two of the seven categories ("pollen" and "indeterminate") comprising over half of the labels. 
 
 
 ### Tiling the ndpi image(s)
