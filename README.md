@@ -75,6 +75,27 @@ This repository hosts the code for an automated machine-learning pipeline design
 
 ## Data
 
+The data we received from the Smithsonian is loaded into NOTS, Rice’s distributed computing server. 
+
+Per scanned and annotated slide, there are two files, ndpi which has the image, and an ndpa file that corresponds to the ndpi, which has information about the annotations and where they are in the image. 
+
+In order to load in the data from NOTS and convert it to a csv file, run the `annotations_to_csv.py` script using the following command:
+```
+cd src/data_preprocessing
+python annotations_to_csv.py
+```
+The current version of this script will access the ndpa files in `/projects/dsci435/smithsonian_sp25/data/annotations` and create a csv with the following information:
+- file name
+- id
+- pol_type
+- x
+- y
+- radius
+
+It will put the resulting csv file in both the github directory as `projects/dsci435/smithsonian_sp25/data/all_annotations.csv` and in NOTS as `/home/ak136/Smithsonian_fossil_Sp25/src/data_preprocessing/all_annotations.csv`
+
+
+
 
 ## Data Preprocessing
 
