@@ -36,7 +36,7 @@ This repository hosts the code for an automated machine-learning model designed 
 
 
 - `src/`
-  - `data_preprocessing/` Scripts relevant to pre-processing the data
+  - `data_preprocessing/` Scripts relevant to pre-processing the data and exploratory data analysis
   - `modeling/` Scripts relevant for modeling
   - `evaluation/` Scripts relevant to model evaluation
 - `README.md` Project documentation
