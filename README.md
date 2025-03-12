@@ -31,21 +31,15 @@ This repository hosts the code for an automated machine-learning pipeline design
 - [Modeling](#modeling)
 - [Acknowledgments/Citations](#acknowledgmentscitations)
 
-## File Structure
+## Repo Structure
 
 
 - `external/`
   - [`ndpi_tile_cropper/`](https://github.com/paleopollen/ndpi-tile-cropper-cli)          # External submodule: ndpi_tile_cropper 
 - `src/`
-  - `evaluation/`
-    - `eval_temp.txt`                   # Evaluation file
-  - `data_preprocessing/`
-    - `eda.py`                         # Exploratory data analysis script
-    - `annotations_to_csv.py`          # Convert annotations to CSV format
-    - `ndpi_to_png_tiles.py`           # Convert NDPI to PNG tiles
-    - `all_annotations.csv`            # All annotations in CSV format
-- `scripts/`
-  - `parse_ndpa.py`                      # Parse NDPA file script
+  - `evaluation/` # Exploratory scripts for the data
+  - `data_preprocessing/` # Scripts relevant to pre-processing the data
+- `scripts/` # Misc. scripts
 - `README.md`                              # Project documentation
 - `requirements.txt`                # Requirements
 
