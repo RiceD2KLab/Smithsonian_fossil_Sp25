@@ -39,8 +39,6 @@ This repository hosts the code for an automated machine-learning model designed 
   - `data_preprocessing/` Scripts relevant to pre-processing the data
   - `modeling/` Scripts relevant for modeling
   - `evaluation/` Scripts relevant to model evaluation
-  
-- `scripts/` Misc. scripts
 - `README.md` Project documentation
 - `requirements.txt` Package requirements
 
