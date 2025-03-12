@@ -71,8 +71,8 @@ Data inputted into the model should come in two forms: ndpi img files, and ndpa 
 Per scanned and annotated slide, there are two files, ndpi which has the image, and an ndpa file that corresponds to the ndpi, which has information about the annotations and where they are in the image. 
 
 At this current state in the project:
-- ndpi files are stored in `/storage/hpc/work/smithsonian/ndpi_files`
-- ndpa annotation files are stored in `/projects/dsci435/smithsonian_sp25/data/annotations`
+- ndpi files are stored in NOTS at `/storage/hpc/work/smithsonian/ndpi_files`
+- ndpa annotation files are stored in NOTS at `/projects/dsci435/smithsonian_sp25/data/annotations`
 
 Key insights about our data include that there is significant class imbalance of palynomorph types, with only two of the seven categories ("pollen" and "indeterminate") comprising over half of the labels. For information about running exploratory data analysis, please proceed to the Data Preprocessing > Exploratory Data Analysis section.
 
