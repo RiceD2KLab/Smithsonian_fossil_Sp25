@@ -1,31 +1,44 @@
 import xml.etree.ElementTree as ET
 import os
 import pandas as pd
-import sys
+from argparse import ArgumentParser
 
-def parse_ndpa_file(ndpa_dir_path):
+
+def get_args():
     """
-    Parses all .ndpa files in a given directory and extracts circle annotation data, saving it to a CSV file in the same directory
+    Gets command line arguments.
+    """
+    parser = ArgumentParser(description="get args for tile cropper")
+    parser.add_argument("--annotations_directory", type=str, help="directory to all the annotations")
+    parser.add_argument("--output_dir", type=str, help="output directory for tiles")
+    args = parser.parse_args()
+    return args
+
+
+def parse_ndpa_file(ndpa_dir_path, output_dir):
+    """
+    Parses all .ndpa files in a ndpa_dir_path and extracts circle annotation data.
+    Resulting CSV file wil be stored in output_dir.
     
     Args:
-        file_name (str): Path to the .ndpa file."
+        ndpa_dir_path (str): Path to directory with all .ndpa
+        output_dir (str): Path to directory for CSV with extracted .ndpa annotations
     """
         
-    # for now, use file path
+    # INTERNAL NOTE: use file path: /projects/dsci435/smithsonian_sp25/data/annotations
     annotations = []
 
-    # get the paths of the annotation files
-    files = os.listdir(ndpa_dir_path)  # Returns both files and directories
+    # gets all file and directory paths within ndpa_dir_path
+    files = os.listdir(ndpa_dir_path)  
 
     file_idx = 0
     num_files = len(files)
-
 
     # for each of the files, get annotation data
     for file_name in files:
         file_idx += 1
         full_path = os.path.join(ndpa_dir_path, file_name)
-        print("\nProcessing [%d/%d]: %s" % (file_idx, num_files, full_path))
+        # print("\nProcessing [%d/%d]: %s" % (file_idx, num_files, full_path))
 
         tree = ET.parse(full_path)
         root = tree.getroot()
@@ -59,18 +72,18 @@ def parse_ndpa_file(ndpa_dir_path):
     # if all annotations have pollen type, make csv
     if annotations_df[annotations_df["pol_type"] == "ERROR"].empty:
         print("Proceeding with making csv!")
-        annotations_df.to_csv('/projects/dsci435/smithsonian_sp25/data/all_annotations.csv', index=False)
-        annotations_df.to_csv('/home/ak136/Smithsonian_fossil_Sp25/src/data_preprocessing/all_annotations.csv', index=False)
+        csv_output_path = os.path.join(output_dir, "all_annotations.csv")
+
+        annotations_df.to_csv(csv_output_path, index=False)
+
+        # hardcoded for testing
+        # annotations_df.to_csv('/home/ak136/Smithsonian_fossil_Sp25/src/data_preprocessing/all_annotations.csv', index=False)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python script.py <ndpa_directory>")
-        sys.exit(1)
+    args = get_args()
+
+    annotations_dir = args.annotations_directory
+    output_dir = args.output_dir
     
-    if sys.argv[1] in ["-h", "--help"]:
-        print("Usage: python script.py <ndpa_file>")
-        print("Parses an NDPA file and extracts circle annotations, saving them to annotations.csv.")
-        sys.exit(0)
-    
-    parse_ndpa_file(sys.argv[1])
+    parse_ndpa_file(annotations_dir, output_dir)

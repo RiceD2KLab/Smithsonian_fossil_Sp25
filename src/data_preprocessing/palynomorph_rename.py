@@ -3,7 +3,6 @@ import pandas as pd
 import csv
 import numpy as np
 
-
 # get the annotation csv
 annotations_df = pd.read_csv("/home/ak136/Smithsonian_fossil_Sp25/src/data_preprocessing/all_annotations.csv")
 # get the categories dictionary csv
