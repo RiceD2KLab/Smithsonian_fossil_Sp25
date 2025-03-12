@@ -29,7 +29,7 @@
 #### Sponsor:
 - **Dr. Ingrid Romero**
 
-This repository hosts the code for an automated machine-learning pipeline designed to detect and classify palynomorphs (fossil pollen, spores, and other organic-walled microorganisms) from high-resolution NDPI (NanoZoomer Digital Pathology Image) files. 
+This repository hosts the code for an automated machine-learning model designed to detect and classify palynomorphs (fossil pollen, spores, and other organic-walled microorganisms) from high-resolution NDPI (NanoZoomer Digital Pathology Image) files. 
 
 
 ## Repo Structure
@@ -66,7 +66,7 @@ This repository hosts the code for an automated machine-learning pipeline design
 
 ## Data
 
-Data received should come in two forms: ndpi img files, and ndpa annotation files. This project expects each set of files to be stored in their own directory. Specifically, all ndpi files stored in a directory, and all ndpa files stored in a different directory. The locations of the directories does not matter, as long as neither directory exists within the other. It is also important to note that ndpi files are very large, so sufficient space for the ndpi img files directory is essential. 
+Data inputted into the model should come in two forms: ndpi img files, and ndpa annotation files. This project expects each set of files to be stored in their own directory. Specifically, all ndpi files stored in a directory, and all ndpa files stored in a different directory. The locations of the directories does not matter, as long as neither directory exists within the other. It is also important to note that ndpi files are very large, so sufficient space for the ndpi img files directory is essential. 
 
 Per scanned and annotated slide, there are two files, ndpi which has the image, and an ndpa file that corresponds to the ndpi, which has information about the annotations and where they are in the image. 
 
