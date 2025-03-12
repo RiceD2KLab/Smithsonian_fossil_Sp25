@@ -36,11 +36,9 @@ This repository hosts the code for an automated machine-learning model designed 
 
 
 - `src/`
-  - `data_preprocessing/` Scripts relevant to pre-processing the data
+  - `data_preprocessing/` Scripts relevant to pre-processing the data and exploratory data analysis
   - `modeling/` Scripts relevant for modeling
   - `evaluation/` Scripts relevant to model evaluation
-  
-- `scripts/` Misc. scripts
 - `README.md` Project documentation
 - `requirements.txt` Package requirements
 
@@ -66,9 +64,9 @@ This repository hosts the code for an automated machine-learning model designed 
 
 ## Data
 
-Data inputted into the model should come in two forms: ndpi img files, and ndpa annotation files. This project expects each set of files to be stored in their own directory. Specifically, all ndpi files stored in a directory, and all ndpa files stored in a different directory. The locations of the directories does not matter, as long as neither directory exists within the other. It is also important to note that ndpi files are very large, so sufficient space for the ndpi img files directory is essential. 
+There is two types of data that should be inputted into the model: ndpi img files, and ndpa annotation files. This is because each ndpi img file has a corresponding ndpa annotation file that has information about the palynomorphs and where they are in the image. 
 
-Per scanned and annotated slide, there are two files, ndpi which has the image, and an ndpa file that corresponds to the ndpi, which has information about the annotations and where they are in the image. 
+This project expects each set of files to be stored in their own directory. Specifically, all ndpi files stored in a single directory, and all ndpa files stored in a different directory. The locations of the directories does not matter, as long as neither directory exists within the other. It is also important to note that ndpi files are usually very large (20-50GB), so sufficient space for the ndpi img files directory is essential. 
 
 At this current state in the project:
 - ndpi files are stored in NOTS at `/storage/hpc/work/smithsonian/ndpi_files`
@@ -84,9 +82,9 @@ Key insights about our data include that there is significant class imbalance of
 In order to convert all ndpa annotation data into a master raw annotation csv file, run the `annotations_to_csv.py` script using the following commands:
 ```
 cd src/data_preprocessing
-python annotations_to_csv.py
+python annotations_to_csv.py <ndpa_dir_path> <csv_output_dir_path>
 ```
-The current version of this script will access the ndpa files in the ndpa annotation file directory and create a csv with the following structure:
+The current version of this script will access the ndpa files in the given ndpa annotation file directory and create a csv with the following structure:
 | file name |    id    | pol_type  |     x     |     y     |  radius   |
 |-----------|----------|-----------|-----------|-----------|-----------|
 |           |          |           |           |           |           |
