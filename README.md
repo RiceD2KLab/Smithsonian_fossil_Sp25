@@ -142,9 +142,9 @@ python cropper_runner.py --dir --ndpi_directory PATH_TO_NDPI_DIRECTORY --annotat
 
 ### Creating a transformed master annotations csv. 
 This step involves taking the annotation csv made previously, and adding features that may be useful for our machine learning models in the future. For example, below are some additional features:
-- tl, bl, tr, br: adding features that store bounding box top-left, bottom-left, top-right, and bottom-right corner coordinates for each annotation (in the nanozoomer coordinate space).
-- tile_id: assigning annotations their respective tiles they exist in, within the associated ndpi image. 
-- loc_in_tile: calculating the pixel wise coordinates of the annotation (bounding box corners and center) relative to the tile the annotation exists in.
+- `tl, bl, tr, br`: adding features that store bounding box top-left, bottom-left, top-right, and bottom-right corner coordinates for each annotation (in the nanozoomer coordinate space).
+- `tile_id`: assigning annotations their respective tiles they exist in, within the associated ndpi image. 
+- `loc_in_tile`: calculating the pixel wise coordinates of the annotation (bounding box corners and center) relative to the tile the annotation exists in.
 The resulting transformed master annotation csv will have the below structure:
 
 | File Name | ID | Pol Type | X  | Y  | Radius | TL | BL | TR | BR | Tile ID | Loc in Tile |
