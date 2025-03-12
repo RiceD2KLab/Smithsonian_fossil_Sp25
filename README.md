@@ -134,9 +134,9 @@ This step involves taking the annotation csv made previously, and adding feature
 - tile_id: assigning annotations their respective tiles they exist in, within the associated ndpi image. 
 - loc_in_tile: calculating the pixel wise coordinates of the annotation (bounding box corners and center) relative to the tile the annotation exists in.
 The resulting transformed master annotation csv will have the below structure:
-| file name | id | pol_type | x | y | radius | tl | bl | tr | br | tile_id | loc_in_tile | 
-|-----------|----|----------|---|---|--------|----|----|----|----|---------|-------------|
-|           |    |          |   |   |        |    |    |    |    |         |             |
+| File Name | ID | Pol Type | X  | Y  | Radius | TL | BL | TR | BR | Tile ID | Loc in Tile |
+|-----------|----|----------|----|----|--------|----|----|----|----|---------|-------------|
+|           |    |          |    |    |        |    |    |    |    |         |             |
 
 However, before performing the transformation of annotations, we must first retrieve the coordinates of each tile for each tiled ndpi img, in json format. The jsons will be stored in /projects/dsci435/smithsonian_sp25/data/annotation_region_tile_coordinates. To get these jsons, we can run the cropper_runner.py script as mentioned above, but add the `--tile_coord_extract` flag to the command line arguments. Below are the commands to run. 
 ```
