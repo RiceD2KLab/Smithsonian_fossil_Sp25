@@ -1,5 +1,14 @@
 # Smithsonian_fossil_Sp25
 
+## Table of Contents
+- [Introduction](#introduction)
+- [Repo Structure](#repo-structure)
+- [Installation](#installation)
+- [Data](#data)
+- [Data Preprocessing](#data-preprocessing)
+- [Modeling](#modeling)
+- [Acknowledgments/Citations](#acknowledgmentscitations)
+  
 ## Introduction
 ### Team Members
 
@@ -20,16 +29,8 @@
 #### Sponsor:
 - **Dr. Ingrid Romero**
 
-This repository hosts the code for an automated machine-learning pipeline designed to detect and classify palynomorphs (fossil pollen, spores, and other organic-walled microorganisms) from high-resolution NDPI (NanoZoomer Digital Pathology Image) files. 
+This repository hosts the code for an automated machine-learning model designed to detect and classify palynomorphs (fossil pollen, spores, and other organic-walled microorganisms) from high-resolution NDPI (NanoZoomer Digital Pathology Image) files. 
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Repo Structure](#repo-structure)
-- [Installation](#installation)
-- [Data](#data)
-- [Data Preprocessing](#data-preprocessing)
-- [Modeling](#modeling)
-- [Acknowledgments/Citations](#acknowledgmentscitations)
 
 ## Repo Structure
 
@@ -65,13 +66,13 @@ This repository hosts the code for an automated machine-learning pipeline design
 
 ## Data
 
-Data received should come in two forms: ndpi img files, and ndpa annotation files. This project expects each set of files to be stored in their own directory. Specifically, all ndpi files stored in a directory, and all ndpa files stored in a different directory. The locations of the directories does not matter, as long as neither directory exists within the other. It is also important to note that ndpi files are very large, so sufficient space for the ndpi img files directory is essential. 
+Data inputted into the model should come in two forms: ndpi img files, and ndpa annotation files. This project expects each set of files to be stored in their own directory. Specifically, all ndpi files stored in a directory, and all ndpa files stored in a different directory. The locations of the directories does not matter, as long as neither directory exists within the other. It is also important to note that ndpi files are very large, so sufficient space for the ndpi img files directory is essential. 
 
 Per scanned and annotated slide, there are two files, ndpi which has the image, and an ndpa file that corresponds to the ndpi, which has information about the annotations and where they are in the image. 
 
 At this current state in the project:
-- ndpi files are stored in `/storage/hpc/work/smithsonian/ndpi_files`
-- ndpa annotation files are stored in `/projects/dsci435/smithsonian_sp25/data/annotations`
+- ndpi files are stored in NOTS at `/storage/hpc/work/smithsonian/ndpi_files`
+- ndpa annotation files are stored in NOTS at `/projects/dsci435/smithsonian_sp25/data/annotations`
 
 Key insights about our data include that there is significant class imbalance of palynomorph types, with only two of the seven categories ("pollen" and "indeterminate") comprising over half of the labels. For information about running exploratory data analysis, please proceed to the Data Preprocessing > Exploratory Data Analysis section.
 
@@ -141,9 +142,9 @@ python cropper_runner.py --dir --ndpi_directory PATH_TO_NDPI_DIRECTORY --annotat
 
 ### Creating a transformed master annotations csv. 
 This step involves taking the annotation csv made previously, and adding features that may be useful for our machine learning models in the future. For example, below are some additional features:
-- tl, bl, tr, br: adding features that store bounding box top-left, bottom-left, top-right, and bottom-right corner coordinates for each annotation (in the nanozoomer coordinate space).
-- tile_id: assigning annotations their respective tiles they exist in, within the associated ndpi image. 
-- loc_in_tile: calculating the pixel wise coordinates of the annotation (bounding box corners and center) relative to the tile the annotation exists in.
+- `tl, bl, tr, br`: adding features that store bounding box top-left, bottom-left, top-right, and bottom-right corner coordinates for each annotation (in the nanozoomer coordinate space).
+- `tile_id`: assigning annotations their respective tiles they exist in, within the associated ndpi image. 
+- `loc_in_tile`: calculating the pixel wise coordinates of the annotation (bounding box corners and center) relative to the tile the annotation exists in.
 The resulting transformed master annotation csv will have the below structure:
 
 | File Name | ID | Pol Type | X  | Y  | Radius | TL | BL | TR | BR | Tile ID | Loc in Tile |
