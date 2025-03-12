@@ -1,5 +1,5 @@
 # Smithsonian_fossil_Sp25
-
+NOTE: currently this ReadMe is written in the perspective that we are training our models. We will edit it in a consumer perspective (for our sponsors) in the future. 
 ## Table of Contents
 - [Introduction](#introduction)
 - [Repo Structure](#repo-structure)
