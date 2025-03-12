@@ -82,9 +82,9 @@ Key insights about our data include that there is significant class imbalance of
 In order to convert all ndpa annotation data into a master raw annotation csv file, run the `annotations_to_csv.py` script using the following commands:
 ```
 cd src/data_preprocessing
-python annotations_to_csv.py
+python annotations_to_csv.py <ndpa_dir_path> <csv_output_dir_path>
 ```
-The current version of this script will access the ndpa files in the ndpa annotation file directory and create a csv with the following structure:
+The current version of this script will access the ndpa files in the given ndpa annotation file directory and create a csv with the following structure:
 | file name |    id    | pol_type  |     x     |     y     |  radius   |
 |-----------|----------|-----------|-----------|-----------|-----------|
 |           |          |           |           |           |           |
