@@ -98,7 +98,7 @@ The script also adds and populates an `area` column to the csv.
 To run this script, use the following command:
 ```
 cd src/data_preprocessing
-python cleaning.py
+python palynomorph_rename.py
 ```
 
 ### Exploratory Data Analysis
