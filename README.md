@@ -150,12 +150,12 @@ The resulting transformed master annotation csv will have the below structure:
 |-----------|----|----------|----|----|--------|----|----|----|----|---------|-------------|
 |           |    |          |    |    |        |    |    |    |    |         |             |
 
-However, before performing the transformation of annotations, we must first retrieve the coordinates of each tile for each tiled ndpi img, in json format. The jsons will be stored in /projects/dsci435/smithsonian_sp25/data/annotation_region_tile_coordinates. To get these jsons, we can run the cropper_runner.py script as mentioned above, but add the `--tile_coord_extract` flag to the command line arguments. Below are the commands to run. 
+However, before performing the transformation of annotations, we must first retrieve the coordinates of each tile for each tiled ndpi img, in json format. The jsons will be stored in `/projects/dsci435/smithsonian_sp25/data/annotation_region_tile_coordinates`. To get these jsons, we can run the `cropper_runner.py` script as mentioned above, but add the `--tile_coord_extract` flag to the command line arguments. Below are the commands to run. 
 ```
 cd src/data_preprocessing
 python cropper_runner.py --dir --tile_coord_extract --ndpi_directory PATH_TO_NDPI_DIRECTORY --annotations_directory PATH_TO_NDPA_DIRECTORY --output_dir PATH_TO_OUTPUT_TILES_DIRECTORY --tile_overlap 660 --tile_size 2048
 ```
-Once the tile coordinates for each ndpi have been extracted, we can perform the transformation of annotations. To do so, run /src/data_preprocessing/annotation_transformer.py. annotation_transformer.py takes several command line arguments as defined below:
+Once the tile coordinates for each ndpi have been extracted, we can perform the transformation of annotations. To do so, run `/src/data_preprocessing/annotation_transformer.py`. annotation_transformer.py takes several command line arguments as defined below:
 ```
     --annotation_filepath : path to the master raw annotation file 
     --annot_region_tile_coords_dir : directory to the tile coordinates of each of the ndpi files 
