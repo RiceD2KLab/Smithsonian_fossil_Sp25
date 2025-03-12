@@ -3,18 +3,17 @@ import os
 import pandas as pd
 import sys
 
-# variables
-annotations = []
-
-
 def parse_ndpa_file(ndpa_dir_path):
     """
-    Parses an .ndpa fileand extracts circle annotation data, saving it to a CSV file.
+    Parses all .ndpa files in a given directory and extracts circle annotation data, saving it to a CSV file in the same directory
     
     Args:
         file_name (str): Path to the .ndpa file."
     """
         
+    # for now, use file path
+    annotations = []
+
     # get the paths of the annotation files
     files = os.listdir(ndpa_dir_path)  # Returns both files and directories
 
