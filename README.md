@@ -24,7 +24,7 @@ This repository hosts the code for an automated machine-learning pipeline design
 
 ## Table of Contents
 - [Introduction](#introduction)
-- [File Structure](#file-structure)
+- [Repo Structure](#repo-structure)
 - [Installation](#installation)
 - [Data](#data)
 - [Data Preprocessing](#data-preprocessing)
