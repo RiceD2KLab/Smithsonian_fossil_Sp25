@@ -1,59 +1,77 @@
 import xml.etree.ElementTree as ET
 import os
 import pandas as pd
+import sys
 
 # variables
 annotations = []
 
-# get the paths of the annotation files
-path = "/projects/dsci435/smithsonian_sp25/data/annotations"
-files = os.listdir(path)  # Returns both files and directories
 
-file_idx = 0
-num_files = len(files)
-
-# for looking at unlabelled
-# files = ["D5410_1_R_2024_02_0911_03_13_Utah.ndpi.ndpa", "Giraffe_24_2_43_R_Giraffe_2025_01_14_10_06_00.ndpi.ndpa"]
-
-
-# for each of the files, get annotation data
-for file_name in files:
-    file_idx += 1
-    full_path = os.path.join(path, file_name)
-    print("\nProcessing [%d/%d]: %s" % (file_idx, num_files, full_path))
-
-    tree = ET.parse(full_path)
-    root = tree.getroot()
-
-    for viewstate in root.findall("ndpviewstate"):
-        annotation = viewstate.find("annotation")
-        if annotation is not None and annotation.get("type") == "circle":
-            
-            # extract title
-            title_element = viewstate.find("title")
-            title = title_element.text if title_element is not None else "ERROR"  # Get the text of the title
-            if title_element is None:
-                print("NONE")
-
-            annotation_data = { 
-                "file": os.path.basename(file_name),
-                "id": viewstate.get("id"),
-                "pol_type": title,
-                "x": int(annotation.find("x").text),
-                "y": int(annotation.find("y").text),
-                "radius": int(annotation.find("radius").text)
-            }
-            # print(annotation_data)
-            annotations.append(annotation_data)
-
+def parse_ndpa_file(ndpa_dir_path):
+    """
+    Parses an .ndpa fileand extracts circle annotation data, saving it to a CSV file.
+    
+    Args:
+        file_name (str): Path to the .ndpa file."
+    """
         
-# convert list of dictionaries holding annotations across all files to dataframe
-annotations_df = pd.DataFrame(annotations)
-# print(annotations_df.head())
+    # get the paths of the annotation files
+    files = os.listdir(ndpa_dir_path)  # Returns both files and directories
 
-# if all annotations have pollen type, make csv
-if annotations_df[annotations_df["pol_type"] == "ERROR"].empty:
-    print("Proceeding with making csv!")
-    annotations_df.to_csv('/projects/dsci435/smithsonian_sp25/data/all_annotations.csv', index=False)
-    annotations_df.to_csv('/home/ak136/Smithsonian_fossil_Sp25/src/data_preprocessing/all_annotations.csv', index=False)
+    file_idx = 0
+    num_files = len(files)
 
+
+    # for each of the files, get annotation data
+    for file_name in files:
+        file_idx += 1
+        full_path = os.path.join(ndpa_dir_path, file_name)
+        print("\nProcessing [%d/%d]: %s" % (file_idx, num_files, full_path))
+
+        tree = ET.parse(full_path)
+        root = tree.getroot()
+
+        for viewstate in root.findall("ndpviewstate"):
+            annotation = viewstate.find("annotation")
+            if annotation is not None and annotation.get("type") == "circle":
+                
+                # extract title
+                title_element = viewstate.find("title")
+                title = title_element.text if title_element is not None else "ERROR"  # Get the text of the title
+                if title_element is None:
+                    print("NONE")
+
+                annotation_data = { 
+                    "file": os.path.basename(file_name),
+                    "id": viewstate.get("id"),
+                    "pol_type": title,
+                    "x": int(annotation.find("x").text),
+                    "y": int(annotation.find("y").text),
+                    "radius": int(annotation.find("radius").text)
+                }
+                # print(annotation_data)
+                annotations.append(annotation_data)
+
+            
+    # convert list of dictionaries holding annotations across all files to dataframe
+    annotations_df = pd.DataFrame(annotations)
+    # print(annotations_df.head())
+
+    # if all annotations have pollen type, make csv
+    if annotations_df[annotations_df["pol_type"] == "ERROR"].empty:
+        print("Proceeding with making csv!")
+        annotations_df.to_csv('/projects/dsci435/smithsonian_sp25/data/all_annotations.csv', index=False)
+        annotations_df.to_csv('/home/ak136/Smithsonian_fossil_Sp25/src/data_preprocessing/all_annotations.csv', index=False)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python script.py <ndpa_directory>")
+        sys.exit(1)
+    
+    if sys.argv[1] in ["-h", "--help"]:
+        print("Usage: python script.py <ndpa_file>")
+        print("Parses an NDPA file and extracts circle annotations, saving them to annotations.csv.")
+        sys.exit(0)
+    
+    parse_ndpa_file(sys.argv[1])
