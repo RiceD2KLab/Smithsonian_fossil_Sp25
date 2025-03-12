@@ -88,7 +88,7 @@ Add info on EDA here.
 
 ## Data Preprocessing (Still in progress)
 
-### Creating a master "raw" annotations csv file from ndpa annoataion file data
+### Creating a master "raw" annotations csv file from ndpa annotation file data
 
 In order to convert all ndpa annotation data into a master raw annotation csv file, run the `annotations_to_csv.py` script using the following commands:
 ```
