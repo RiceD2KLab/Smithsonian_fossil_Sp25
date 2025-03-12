@@ -1,9 +1,0 @@
-name: Palynomorph_Detection
-channels:
-  - conda-forge
-  - defaults
-dependencies:
-  - openjdk
-  - pillow
-  - openslide
-  - pip
