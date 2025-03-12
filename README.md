@@ -34,14 +34,15 @@ This repository hosts the code for an automated machine-learning pipeline design
 ## Repo Structure
 
 
-- `external/`
-  - [`ndpi_tile_cropper/`](https://github.com/paleopollen/ndpi-tile-cropper-cli)          # External submodule: ndpi_tile_cropper 
 - `src/`
-  - `evaluation/` # Exploratory scripts for the data
-  - `data_preprocessing/` # Scripts relevant to pre-processing the data
-- `scripts/` # Misc. scripts
-- `README.md`                              # Project documentation
-- `requirements.txt`                # Requirements
+  - `data_preprocessing/` Scripts relevant to pre-processing the data
+    - [`ndpi_tile_cropper/`](https://github.com/Jonathanwxlee/ndpi-tile-cropper-cli) Forked submodule of ndpi_tile_cropper (see acknowledgments)
+  - `modeling` Scripts relevant for modeling
+  - `evaluation/` Scripts relevant to model evaluation
+  
+- `scripts/` Misc. scripts
+- `README.md` Project documentation
+- `requirements.txt` Package requirements
 
 
 ## Installation
