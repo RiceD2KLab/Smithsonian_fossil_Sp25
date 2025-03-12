@@ -37,7 +37,7 @@ This repository hosts the code for an automated machine-learning pipeline design
 - `src/`
   - `data_preprocessing/` Scripts relevant to pre-processing the data
     - [`ndpi_tile_cropper/`](https://github.com/Jonathanwxlee/ndpi-tile-cropper-cli) Forked submodule of ndpi_tile_cropper (see acknowledgments)
-  - `modeling` Scripts relevant for modeling
+  - `modeling/` Scripts relevant for modeling
   - `evaluation/` Scripts relevant to model evaluation
   
 - `scripts/` Misc. scripts
