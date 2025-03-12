@@ -100,7 +100,17 @@ It will put the resulting csv file in both the github directory as `projects/dsc
 ## Data Preprocessing
 
 ### Creating a master "raw" annotations csv file from ndpa annoataion file data
-AJ: instructions on which scripts/how to run scripts to get a master raw annotations csv file
+
+Many of the annotations of the palynomorphs in our data are very specific. Because we are interested in 7 broad categories of palynomorphs, we have been provided a dictionary of different specimen names and the category they belong to. The dictionary was provided to us by the Smithsonian as a csv file named `Dictionary_categories_NDPI_files.csv`. Using this, the `cleaning.py` file replaces the instances of specimen names to one of the seven categories, and stores them in the Github as well as NOTS. 
+
+The script also adds and populates a `radius` column to the csv. 
+
+To run this script, use the following command:
+```
+cd src/data_preprocessing
+python cleaning.py
+```
+
 
 ### Tiling the ndpi image(s)
 To tile an ndpi image, run /src/data_preprocessing/cropper_runner.py. cropper_runner.py takes several command line arguments as defined below:
