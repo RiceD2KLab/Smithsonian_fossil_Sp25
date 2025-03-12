@@ -29,7 +29,7 @@ tile coordinate extraction:
 """
 Command line parser
 Inputs: N/A (reads command line args)
-Outputs: 
+Returns: 
     - args: A namespace object containing the parsed arguments as attributes
 """
 def get_args():

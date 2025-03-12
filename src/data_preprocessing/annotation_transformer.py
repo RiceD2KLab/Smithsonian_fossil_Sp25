@@ -6,33 +6,18 @@ import glob
 import json
 import openslide
 """
-path for current master annotation csv: /projects/dsci435/smithsonian_sp25/data/cleaned_annotations.csv
-all cropped tiles dir: /projects/dsci435/smithsonian_sp25/data/tile_imgs
-output_dir: /projects/dsci435/smithsonian_sp25/data
-nm_to_px_ratio: 229
-tile_size: 1024
-
 Usage: 
 python3 annotation_transformer.py --annotation_filepath /projects/dsci435/smithsonian_sp25/data/cleaned_annotations.csv --annot_region_tile_coords_dir /projects/dsci435/smithsonian_sp25/data/annotation_region_tile_coordinates --output_dir /projects/dsci435/smithsonian_sp25/data --tile_size 2048
 
-
-How this code should work. 
-- Initially should read the master annotation csv file. 
-- read the values from the rows of the master annotation csv file
-
-Each function should create different parts of the csv. 
-
-functions:
-- read metadata
-- Create Bounding Box from Circle
-- Convert nm to px
-- tile assignment
-- determine pixel-wise location of annotation center with respect to the tile
-
-
-EDITTTT use Numpy for this
+EDIT NOTE: consider Numpy for efficient computations
 """
 
+"""
+Command line parser
+Inputs: N/A (reads command line args)
+Return: 
+    - args: A namespace object containing the parsed arguments as attributes
+"""
 def get_args():
     parser = ArgumentParser(description="get args for tile cropper")
     parser.add_argument("--annotation_filepath", type=str, help="path to the master annotation file")
@@ -45,10 +30,10 @@ def get_args():
 """
 This function reads necessary metadata for an inputted ndpi file
 
-inputs: 
+Inputs: 
     - input_ndpi_file_path: absolute path to the ndpi file to read metadata for. 
 
-returns:
+Returns:
     - a two-element tuple: first element is the x coordinate (in nm) of the center of the ndpi file. Second element is the y coordiante (in nm) of the center of the ndpi file. 
     note: this coordinate location is relative to the whole nanozoomer scanned space
     - ndpi_width_nm: the width of the ndpi file in nm
@@ -184,8 +169,8 @@ def annotation_tile_determiner(c_x_px, c_y_px, radius_px, filename, tile_coords_
 
 
 """
+NOTE: STILL IN PROGRESS
 This function retrieves the relative location of annotation center in its respective tile. 
-
 Inputs: 
     - 
 
