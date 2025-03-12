@@ -10,20 +10,28 @@ import javabridge
 import json
 import openslide
 
+"""
+USAGE EXAMPLES
+
+ndpi tile cropping: 
+    - single ndpi
+        * usage: python3 cropper_runner.py --input_file_path /storage/hpc/work/dsci435/smithsonian/ndpi_files/D9151-A-2_L_2024_02_02_16_08_52_Texas.ndpi --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
+    - whole directory ndpis:
+        * usage: python3 cropper_runner.py --dir --ndpi_directory /storage/hpc/work/dsci435/smithsonian/ndpi_files --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
+
+tile coordinate extraction:
+    - single ndpi
+        * usage: python3 cropper_runner.py --tile_coord_extract --input_file_path /storage/hpc/work/dsci435/smithsonian/ndpi_files/D9151-A-2_L_2024_02_02_16_08_52_Texas.ndpi --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
+    - whole directory of ndpis
+        * usage: python3 cropper_runner.py --tile_coord_extract --dir --ndpi_directory /storage/hpc/work/dsci435/smithsonian/ndpi_files --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
+"""
 
 """
-ndpi storage location: /storage/hpc/work/dsci435/smithsonian
-single usage
-usage: python3 cropper_runner.py --input_file_path /storage/hpc/work/dsci435/smithsonian/ndpi_files/D9151-A-2_L_2024_02_02_16_08_52_Texas.ndpi --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
-
-whole directory usage
-usage: python3 cropper_runner.py --dir --ndpi_directory /storage/hpc/work/dsci435/smithsonian/ndpi_files --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
-
-for tile_coordinate extraction
-single usage:
-    python3 cropper_runner.py --tile_coord_extract --input_file_path /storage/hpc/work/dsci435/smithsonian/ndpi_files/D9151-A-2_L_2024_02_02_16_08_52_Texas.ndpi --annotations_directory /projects/dsci435/smithsonian_sp25/data/annotations --output_dir /home/jwl9/test_cropper --tile_overlap 660 --tile_size 2048
+Command line parser
+Inputs: N/A (reads command line args)
+Outputs: 
+    - args: A namespace object containing the parsed arguments as attributes
 """
-
 def get_args():
     parser = ArgumentParser(description="get args for tile cropper")
     parser.add_argument("--dir", action="store_true", help="flag for running cropper on a whole directory")
@@ -39,11 +47,10 @@ def get_args():
 
 """
 This function reads necessary metadata for an inputted ndpi file
-
 Inputs:
     - input_ndpi_file_path: the absolute path to the ndpi file path to read metadata for
 
-returns:
+Returns:
     - a two-element tuple: first element is the x coordinate (in nm) of the center of the ndpi file. Second element is the y coordiante (in nm) of the center of the ndpi file. 
     note: this coordinate location is relative to the whole nanozoomer scanned space
     - ndpi_width_nm: the width of the ndpi file in nm
@@ -96,7 +103,6 @@ def translation(x, y, horizontal_shift, vertical_shift):
     new_y = y + vertical_shift
     return new_x, new_y
 
-
 """
 This function perfrms a transformation on given points. 
 
@@ -108,7 +114,6 @@ Return:
     - new_y: transformed y coordinate in nm
 """
 def point_transformation(x, y, input_ndpi_file_path):
-
     ndpi_center_nm, ndpi_width, ndpi_height, _, _ = read_ndpi_metadata(input_ndpi_file_path)
     top_left_x = ndpi_center_nm[0] - (ndpi_width // 2)
     top_left_y = ndpi_center_nm[1] - (ndpi_height // 2) # keep in mind: this is SUBTRACTION because the upwards direction is (-)!
@@ -116,13 +121,12 @@ def point_transformation(x, y, input_ndpi_file_path):
     new_x, new_y = translation(x, y, (-1) * top_left_x, (-1) * top_left_y) # always want to move in the opposite direction 
     return new_x, new_y
 
-
 """
 This function retrieves the bounds of the annotation region in nanometers. 
 Input: 
     - input_ndpi_file_path: string representing the absolute path to the input ndpi file.
     - annotations_directory: string representing the directory to all the annotations
-Output:
+Returns:
     - min_x_nano: the top left x coordinate of the annotated region in nanometers 
     - min_y_nano: the top left y coordiante of the annotated region in nanometers
     - max_x_nano: the bottom right x coordinate of the annotated region in nanometers
@@ -134,6 +138,7 @@ def annotation_region_bounds_retrieval(input_ndpi_file_path, annotations_directo
     root = tree.getroot()
     for viewstate in root.findall("ndpviewstate"):
         annotation = viewstate.find("annotation")
+        # this tells us that it is an annotated region
         if annotation is not None and annotation.get("displayname") == "AnnotateRectangle":
             pointlist = annotation.find("pointlist")
             if pointlist is not None:
@@ -142,6 +147,7 @@ def annotation_region_bounds_retrieval(input_ndpi_file_path, annotations_directo
                 for point in pointlist.findall("point"):
                     xs.append(int(point.find('x').text))
                     ys.append(int(point.find('y').text))
+                # basically, determine the coordinates of the top left and bottom right coordinates of the annotated region. 
                 min_x_nano = min(xs)
                 max_x_nano = max(xs)
                 min_y_nano = min(ys)
@@ -149,8 +155,21 @@ def annotation_region_bounds_retrieval(input_ndpi_file_path, annotations_directo
 
                 return min_x_nano, min_y_nano, max_x_nano, max_y_nano
                                 
+"""
+This function runs the ndpi-tile-cropper-cli tool with the inputted command line arguments
+Inputs:
+    - input_ndpi_file_path: string representing the absolute path to the ndpi file to be fed through the ndpi-tile-cropper tool
+    - annotations_directory: string representing the absolute path to the directory of all ndpa annotation files
+    - output_dir: string representing the directory to store the tile crops outputted by the ndpi-tile-cropper-tool
+    - tile_overlap: an integer representing the amount of overlap for each tile in pixels.
+    - tile_size: an integer representing the side length size of the tiles in pixels. 
+    - tile_coord_extract: a boolean: True for running the ndpi-tile-cropper-cli tool just to extract coordinates, False if we want the tool to actually crop the inputed ndpi image
 
-def run_ndpi_cropper_command(input_ndpi_file_path: str, annotations_directory: str, output_dir: str, tile_overlap: int, tile_size: int, tile_coord_extract:bool):
+Returns:
+    - No return
+    - this function will either save image tiles to the specified output directory, or save jsons to a specified output directory. 
+"""
+def run_ndpi_cropper_command(input_ndpi_file_path, annotations_directory, output_dir, tile_overlap, tile_size, tile_coord_extract):
     """Runs the ndpi_tile_cropper CLI command with the given input file and outputs to a specified location."""
     _, _, _, mmpp_x, mmpp_y = read_ndpi_metadata(input_ndpi_file_path)
     nmpp_x = mmpp_x * 1000
