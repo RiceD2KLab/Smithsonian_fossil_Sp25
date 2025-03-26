@@ -72,6 +72,8 @@ python setup.py
 
 ## Data
 
+<ins>ndpi images (.ndpi)</ins>
+
 There are two types of data that should be inputted into the model: ndpi img files, and ndpa annotation files. This is because each ndpi img file has a corresponding ndpa annotation file that has information about the palynomorphs and where they are in the image. 
 
 This project expects each set of files to be stored in their own directory. Specifically, all ndpi files stored in a single directory, and all ndpa files stored in a different directory. The locations of the directories does not matter, as long as neither directory exists within the other. It is also important to note that ndpi files are usually very large (20-50GB), so sufficient space for the ndpi img files directory is essential. 
