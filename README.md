@@ -5,6 +5,7 @@ NOTE: currently this ReadMe is written in the perspective that we are training o
 - [Repo Structure](#repo-structure)
 - [Installation](#installation)
 - [Data](#data)
+- [Setup](#setup)
 - [Data Preprocessing](#data-preprocessing)
 - [Exploratory Data Analysis](#exploratory-data-analysis)
 - [Modeling](#modeling)
