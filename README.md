@@ -66,12 +66,12 @@ This repository hosts the code for an automated machine-learning model designed 
    ```
 ## SetUp
 To set up the code, please run the following commands. The user will then be prompted to fill out the fields below to configure locations, and other settings:
-- abs_path_to_ndpi_dir : this is the absolute path to the directory that holds all the ndpi images
-- abs_path_to_ndpa_dir : this is the absolute path to the directory that holds all the ndpa annotation files
-- abs_path_to_location_for_master_annotation_csv : this is the absolute path to the directory holding the master_annotation_csv to be created at the annotation preprocessing step.
-- abs_path_to_ndpi_tiles_dir : this is the absolute path to the directory that holds all tiled ndpi images
+- abs_path_to_ndpi_dir : Input the absolute path to the directory that holds all the ndpi images
+- abs_path_to_ndpa_dir : Input the absolute path to the directory that holds all the ndpa annotation files
+- abs_path_to_location_for_master_annotation_csv : Input the absolute path to the directory holding the master_annotation_csv to be created at the annotation preprocessing step.
+- abs_path_to_ndpi_tiles_dir : Input the absolute path to the directory that holds all tiled ndpi images
 - tile_size : this is the tile size in pixels. Input only a single integer that represents the side length of the tile. Currently, only square tiles are supported.
-- tile_overlap : Enter an integer representing the pixel amount of overlap for the tiles
+- tile_overlap : Input an integer representing the pixel amount of overlap for the tiles
 ```
 cd scripts
 python setup.py
