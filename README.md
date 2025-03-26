@@ -37,8 +37,10 @@ This repository hosts the code for an automated machine-learning model designed 
 
 - `src/`
   - `data_preprocessing/` Scripts relevant to pre-processing the data and exploratory data analysis
+  - `entities/` Classes to represent data structures
   - `modeling/` Scripts relevant for modeling
   - `evaluation/` Scripts relevant to model evaluation
+  - `tools/` project wide utilities/tools
 - `README.md` Project documentation
 - `requirements.txt` Package requirements
 
@@ -61,10 +63,16 @@ This repository hosts the code for an automated machine-learning model designed 
    ```sh
    pip install -r requirements.txt
    ```
+## SetUp
+To set up the code, please run the following commands. The user will then be prompted to fill out some fields to set up configurations and directories (ndpa/ndpi directory location, tiles location, tile size and overlap, etc). 
+```
+cd scripts
+python setup.py
+```
 
 ## Data
 
-There is two types of data that should be inputted into the model: ndpi img files, and ndpa annotation files. This is because each ndpi img file has a corresponding ndpa annotation file that has information about the palynomorphs and where they are in the image. 
+There are two types of data that should be inputted into the model: ndpi img files, and ndpa annotation files. This is because each ndpi img file has a corresponding ndpa annotation file that has information about the palynomorphs and where they are in the image. 
 
 This project expects each set of files to be stored in their own directory. Specifically, all ndpi files stored in a single directory, and all ndpa files stored in a different directory. The locations of the directories does not matter, as long as neither directory exists within the other. It is also important to note that ndpi files are usually very large (20-50GB), so sufficient space for the ndpi img files directory is essential. 
 
