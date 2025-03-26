@@ -1,8 +1,0 @@
- 
-Run the following command to set up an ssh tunnel to the compute node:
-
-ssh -NL 50590:bc11u17n1:50590 ak136@nots.crc.rice.edu
-
-Copy the 127.0.0.1 link below into a browser on your local machine 
-FATAL:   While checking container encryption: could not open image /opt/apps/examples/Jupyter/tensorflow-notebook_latest.sif: failed to retrieve path for /opt/apps/examples/Jupyter/tensorflow-notebook_latest.sif: lstat /opt/apps/examples/Jupyter/tensorflow-notebook_latest.sif: no such file or directory
-srun: error: bc11u17n1: task 0: Exited with exit code 255
