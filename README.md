@@ -64,19 +64,6 @@ This repository hosts the code for an automated machine-learning model designed 
    ```sh
    pip install -r requirements.txt
    ```
-## SetUp
-To set up the code, please run the following commands. The user will then be prompted to fill out the fields below to configure locations, and other settings:
-- abs_path_to_ndpi_dir : Input the absolute path to the directory that holds all the ndpi images
-- abs_path_to_ndpa_dir : Input the absolute path to the directory that holds all the ndpa annotation files
-- abs_path_to_location_for_master_annotation_csv : Input the absolute path to the directory holding the master_annotation_csv to be created at the annotation preprocessing step.
-- abs_path_to_ndpi_tiles_dir : Input the absolute path to the directory that holds all tiled ndpi images
-- tile_size : this is the tile size in pixels. Input only a single integer that represents the side length of the tile. Currently, only square tiles are supported.
-- tile_overlap : Input an integer representing the pixel amount of overlap for the tiles
-```
-cd scripts
-python setup.py
-```
-
 ## Data
 
 **ndpi images (.ndpi)** : this project expects all ndpi files to be stored in a single directory. Nothing other than the ndpi files should exist in this directory. NOTE: ndpi files are usually very large (20-50GB), so sufficient space for the ndpi img files directory is essential. 
@@ -89,6 +76,18 @@ For example: for D3283-2_2024_02_06_15_37_28_Kentucky,
 - NDPI: D3283-2_2024_02_06_15_37_28_Kentucky.ndpi,
 - NDPA: D3283-2_2024_02_06_15_37_28_Kentucky.ndpi.ndpa (the '.ndpi.ndpa' is intentional)
 
+## SetUp
+To set up the code, please run the following commands. The user will then be prompted to fill out the fields below to configure locations, and other settings:
+- abs_path_to_ndpi_dir : Input the absolute path to the directory that holds all the ndpi images
+- abs_path_to_ndpa_dir : Input the absolute path to the directory that holds all the ndpa annotation files
+- abs_path_to_location_for_master_annotation_csv : Input the absolute path to the directory holding the master_annotation_csv to be created at the annotation preprocessing step.
+- abs_path_to_ndpi_tiles_dir : Input the absolute path to the directory that holds all tiled ndpi images
+- tile_size : this is the tile size in pixels. Input only a single integer that represents the side length of the tile. Currently, only square tiles are supported.
+- tile_overlap : Input an integer representing the pixel amount of overlap for the tiles
+```
+cd scripts
+python setup.py
+```
 ## Data Preprocessing
 
 The order of the data preprocessing steps is important. The user must preprocess the images first before preprocessing the annotations. 
