@@ -105,8 +105,9 @@ Where TL, BL, TR, BR are the top-left, bottom-left, top-right, and bottom-right 
 
 
 ## Exploratory Data Analysis
-In order to run the script generating visualizations and summarizations of our data, run the following commands:
 NOTE: python eda.py is being heavily edited right now so it does not quite up to the standards expected for the software check. Please forgive us. 
+
+In order to run the script generating visualizations and summarizations of our data, run the following commands:
 ```
 cd src/data_preprocessing
 python eda.py
