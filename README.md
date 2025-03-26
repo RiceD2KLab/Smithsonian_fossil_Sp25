@@ -91,6 +91,23 @@ The order of the data preprocessing steps is important. The user must preprocess
 cd scripts
 python image_preprocessing.py
 ```
+The file structure of the tiled ndpi images will look as follows:
+```
+all tiles directory/ # this is the directory for all tiles specified by the user at setup.
+|     |------> filename1/ # the ndpi image that was tiled (i.e. D3283-2_2024_02_06_15_37_28_Kentucky)
+|     |            |------> 0x_0y/ # the particular tile (the folder name is the top left coordinate of the tile
+|     |            |           |------> 0z.png # a particular focal plane of the tile
+|     |            |           |------> 1z.png
+|     |            |           |------> ...
+|     |            |           |------> 24z.png
+|     |            |-------> 0x_2048y/
+|     |            |           |------> 0z.png
+|     |            |           |------> ...
+|     |            |-------> ...
+|     |------> filename2/
+|     |            |------> ...
+|     |------> ...
+```
 2. **Annotation preprocessing**: Now that all ndpi images have been tiled, the annoation preprocessing can be run. Run the code below to save all annotations of all the ndpa files into one master_annotation_csv file stored at the location specified by the user at setup.
 ```
 cd scripts
