@@ -2,5 +2,7 @@
     "abs_path_to_ndpi_dir": "/storage/hpc/work/dsci435/smithsonian_2/ndpi_imgs",
     "abs_path_to_ndpa_dir": "/storage/hpc/work/dsci435/smithsonian_2/ndpa_files",
     "abs_path_to_location_for_master_annotation_csv": "/storage/hpc/work/dsci435/smithsonian_2/master_annotation_csv",
-    "abs_path_to_ndpi_tiles_dir": "/storage/hpc/work/dsci435/smithsonian_2/ndpi_tiles"
+    "abs_path_to_ndpi_tiles_dir": "/storage/hpc/work/dsci435/smithsonian_2/ndpi_tiles",
+    "tile_size": 2048,
+    "tile_overlap": 660
 }
