@@ -6,6 +6,7 @@ NOTE: currently this ReadMe is written in the perspective that we are training o
 - [Installation](#installation)
 - [Data](#data)
 - [Data Preprocessing](#data-preprocessing)
+- [Exploratory Data Analysis](#exploratory-data-analysis)
 - [Modeling](#modeling)
 - [Acknowledgments/Citations](#acknowledgmentscitations)
   
@@ -72,47 +73,40 @@ python setup.py
 
 ## Data
 
-<ins>ndpi images (.ndpi)</ins>
+**ndpi images (.ndpi)** : this project expects all ndpi files to be stored in a single directory. Nothing other than the ndpi files should exist in this directory. NOTE: ndpi files are usually very large (20-50GB), so sufficient space for the ndpi img files directory is essential. 
 
-There are two types of data that should be inputted into the model: ndpi img files, and ndpa annotation files. This is because each ndpi img file has a corresponding ndpa annotation file that has information about the palynomorphs and where they are in the image. 
+**ndpa annotation files (.ndpa)** : this project expects all ndpa files to be stored in a single directory, different from the ndpi images. Nothing other than the ndpa files should exist in this directory
 
-This project expects each set of files to be stored in their own directory. Specifically, all ndpi files stored in a single directory, and all ndpa files stored in a different directory. The locations of the directories does not matter, as long as neither directory exists within the other. It is also important to note that ndpi files are usually very large (20-50GB), so sufficient space for the ndpi img files directory is essential. 
+Each ndpi img file has a corresponding ndpa annotation file that has information about the palynomorphs and where they are in the image. The names of each file for a particular specimen are the same, save their file extensions. 
 
-At this current state in the project:
-- ndpi files are stored in NOTS at `/storage/hpc/work/smithsonian/ndpi_files`
-- ndpa annotation files are stored in NOTS at `/projects/dsci435/smithsonian_sp25/data/annotations`
+For example: for D3283-2_2024_02_06_15_37_28_Kentucky,
+- NDPI: D3283-2_2024_02_06_15_37_28_Kentucky.ndpi,
+- NDPA: D3283-2_2024_02_06_15_37_28_Kentucky.ndpi.ndpa (the '.ndpi.ndpa' is intentional)
 
-Key insights about our data include that there is significant class imbalance of palynomorph types, with only two of the seven categories ("pollen" and "indeterminate") comprising over half of the labels. For information about running exploratory data analysis, please proceed to the Data Preprocessing > Exploratory Data Analysis section.
+## Data Preprocessing
 
-
-## Data Preprocessing (Still in progress)
-
-### Creating a master "raw" annotations csv file from ndpa annotation file data
-
-In order to convert all ndpa annotation data into a master raw annotation csv file, run the `annotations_to_csv.py` script using the following commands:
+The order of the data preprocessing steps is important. The user must preprocess the images first before preprocessing the annotations. 
+1. **Image preprocessing**: run the code below to tile a directory of ndpi images, with tiles stored at the directory specified by the user at setup.
 ```
-cd src/data_preprocessing
-python annotations_to_csv.py <ndpa_dir_path> <csv_output_dir_path>
+cd scripts
+python image_preprocessing.py
 ```
-The current version of this script will access the ndpa files in the given ndpa annotation file directory and create a csv with the following structure:
-| file name |    id    | pol_type  |     x     |     y     |  radius   |
-|-----------|----------|-----------|-----------|-----------|-----------|
-|           |          |           |           |           |           |
-
-Currently, the `annotations_to_csv.py` script outputs the resulting csv file in both the github directory as `projects/dsci435/smithsonian_sp25/data/all_annotations.csv` and in NOTS as `/home/ak136/Smithsonian_fossil_Sp25/src/data_preprocessing/all_annotations.csv`
-
-Many of the annotations of the palynomorphs in our data are very specific. Because we are interested in only 7 broad categories of palynomorphs, we have been provided a dictionary of different specimen names and the category they belong to. The dictionary was provided to us by the Smithsonian as a csv file named `Dictionary_categories_NDPI_files.csv`. Using this, the `cleaning.py` script replaces the instances of specimen names to one of the seven categories, and stores them in the Github (and currently in NOTS as well). 
-
-The script also adds and populates an `area` column to the csv. 
-
-To run this script, use the following command:
+2. **Annotation preprocessing**: Now that all ndpi images have been tiled, the annoation preprocessing can be run. Run the code below to save all annotations of all the ndpa files into one master_annotation_csv file stored at the location specified by the user at setup.
 ```
-cd src/data_preprocessing
-python palynomorph_rename.py
+cd scripts
+python annnotation_preprocessing.py
 ```
+In particular, the csv saved from annotation preprocessing has the following structure
+| File_name | annot_id | Palynomorph_type | Center | Radius | TL | BL | TR | BR | Tile_id |
+|-----------|----------|------------------|--------|--------|----|----|----|----|---------|
+|           |          |                  |        |        |    |    |    |    |         | 
 
-### Exploratory Data Analysis
+Where TL, BL, TR, BR are the top-left, bottom-left, top-right, and bottom-right corners of the bounding box for the annotation, and tile_id is the name of the tile that the annotation exists in. 
+
+
+## Exploratory Data Analysis
 In order to run the script generating visualizations and summarizations of our data, run the following commands:
+NOTE: python eda.py is being heavily edited right now so it does not quite up to the standards expected for the software check. Please forgive us. 
 ```
 cd src/data_preprocessing
 python eda.py
@@ -128,59 +122,8 @@ The script will output in the console the following information and visualizatio
 - Box plot of the distribution of annotation areas per palynomorph type
 
 
-### Tiling the ndpi image(s)
-To tile an ndpi image, run `/src/data_preprocessing/cropper_runner.py`. cropper_runner.py takes several command line arguments as defined below:
-```
-    --dir : a flag for running the cropper tool on a whole directory of ndpi imgs 
-    --tile_coord_extract : a flag for only extracting jsons of the pixel-wise tile coordinates. No cropping is performed. 
-    --input_file_path : The absolute path to the input ndpi img. IMPORTANT: Only use this if cropping a single ndpi img. 
-    --ndpi_directory : The absolute path to a directory of ndpi imgs. IMPORTANT: Only use this if cropping all ndpi imgs in a directory.
-    --annotations_directory : The absolute path to a directory of all the ndpa annotation files.
-    --output_dir : output directory for results of tiles
-    --tile_overlap : pixel-wise overlap amount of tiles
-    --tile_size : pixel-wise size of the tiles
-```
-
-Given that the ndpi imgs and the ndpa annotation files are stored in the structure specified in the data section, run following commands below to tile a directory of ndpi imgs. 
-
-```
-cd src/data_preprocessing
-python cropper_runner.py --dir --ndpi_directory PATH_TO_NDPI_DIRECTORY --annotations_directory PATH_TO_NDPA_DIRECTORY --output_dir PATH_TO_OUTPUT_TILES_DIRECTORY --tile_overlap 660 --tile_size 2048
-```
-
-### Creating a transformed master annotations csv. 
-This step involves taking the annotation csv made previously, and adding features that may be useful for our machine learning models in the future. For example, below are some additional features:
-- `tl, bl, tr, br`: adding features that store bounding box top-left, bottom-left, top-right, and bottom-right corner coordinates for each annotation (in the nanozoomer coordinate space).
-- `tile_id`: assigning annotations their respective tiles they exist in, within the associated ndpi image. 
-- `loc_in_tile`: calculating the pixel wise coordinates of the annotation (bounding box corners and center) relative to the tile the annotation exists in.
-The resulting transformed master annotation csv will have the below structure:
-
-| File Name | ID | Pol Type | X  | Y  | Radius | TL | BL | TR | BR | Tile ID | Loc in Tile |
-|-----------|----|----------|----|----|--------|----|----|----|----|---------|-------------|
-|           |    |          |    |    |        |    |    |    |    |         |             |
-
-However, before performing the transformation of annotations, we must first retrieve the coordinates of each tile for each tiled ndpi img, in json format. The jsons will be stored in `/projects/dsci435/smithsonian_sp25/data/annotation_region_tile_coordinates`. To get these jsons, we can run the `cropper_runner.py` script as mentioned above, but add the `--tile_coord_extract` flag to the command line arguments. Below are the commands to run. 
-```
-cd src/data_preprocessing
-python cropper_runner.py --dir --tile_coord_extract --ndpi_directory PATH_TO_NDPI_DIRECTORY --annotations_directory PATH_TO_NDPA_DIRECTORY --output_dir PATH_TO_OUTPUT_TILES_DIRECTORY --tile_overlap 660 --tile_size 2048
-```
-Once the tile coordinates for each ndpi have been extracted, we can perform the transformation of annotations. To do so, run `/src/data_preprocessing/annotation_transformer.py`. annotation_transformer.py takes several command line arguments as defined below:
-```
-    --annotation_filepath : path to the master raw annotation file 
-    --annot_region_tile_coords_dir : directory to the tile coordinates of each of the ndpi files 
-    --output_dir : directory location to save the transformed annotation file
-    --tile_size : the side length (in pixels) of the square tile crop. 
-```
-Given that the ndpi imgs and the ndpa annotation files are stored in the structure specified in the data section, run following commands below to perform annotation transformation:
-```
-cd src/data_preprocessing
-python annotation_transformer.py --annotation_filepath PATH_TO_MASTER_RAW_ANNOTATIONS_CSV --annot_region_tile_coords_dir /projects/dsci435/smithsonian_sp25/data/annotation_region_tile_coordinates --output_dir PATH_TO_OUTPUT_TRANSFORMED_CSV_DIRECTORY --tile_size 2048
-
-NOTE: we will change the hardcoded absolute path. It was a last minute edit before the midterm code check
-```
-
-
-## Modeling: Work in Progress
+## Modeling:
+Work in progress...
 
 ## Acknowledgments/Citations
 
