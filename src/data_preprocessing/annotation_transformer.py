@@ -30,7 +30,8 @@ def bounding_box_generator(center_nm, radius_nm):
     return tl, bl, tr, br
 
 """
-This function assigns annotations their corresponding tiles based on their pixel wise location, and the tile coordinates 
+This function assigns annotations their corresponding tiles based on their pixel wise location, and the tile coordinates. 
+NOTE: this function assumes that the ndpi file you are working with has already been tiled, with the location of the tiles in "abs_path_to_ndpi_tiles_dir" in /src/config.json
 Inputs:
     - c_x_px: the x coordinate of the annotation in pixels
     - c_y_px: the y coordinate of the annotation in pixels
