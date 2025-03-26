@@ -29,6 +29,9 @@ class Ndpa:
 
     """
     def __init__(self, ndpa_file_path):
+        """
+        constructor with single parameter: ndpa_file_path - a string representing the absolute file path to the ndpa file
+        """
         # open the ndpa and extract everything 
         self.absolute_file_path = ndpa_file_path
         self.filename = os.path.basename(ndpa_file_path)
