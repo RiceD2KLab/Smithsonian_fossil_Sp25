@@ -96,7 +96,7 @@ def create_master_annotation_csv():
             ndpa = Ndpa(os.path.join(ndpa_directory, file))
             for annot_id, annotation_obj in ndpa.annotations.items():
                 specimen_name = file.rsplit('.', 2)[0]
-                palynomorph_category = species_to_category[annotation_obj.label.lower()]
+                palynomorph_category = species_to_category[annotation_obj.label.lower().strip()]
                 radius_nm = annotation_obj.radius_nm
                 center_nm = (annotation_obj.center_x_nm, annotation_obj.center_y_nm)
                 tl_nm, bl_nm, tr_nm, br_nm = bounding_box_generator(center_nm, radius_nm)
