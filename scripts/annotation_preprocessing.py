@@ -1,4 +1,9 @@
-from data_preprocessing.annotation_transformer import create_master_annotation_csv
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from src.data_preprocessing.annotation_transformer import create_master_annotation_csv
 
 if __name__ == "__main__":
     # create master annotation csv

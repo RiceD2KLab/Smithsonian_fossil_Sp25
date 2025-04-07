@@ -1,4 +1,6 @@
 from src import config
+import os
+import xml.etree.ElementTree as ET
 
 """
 This function retrieves the bounds of the annotation region in nanometers. 
@@ -12,7 +14,7 @@ Returns:
 """
 def annotation_region_bounds_retrieval(input_ndpi_file_path):
     file_no_extension = os.path.splitext(os.path.basename(input_ndpi_file_path))[0]
-    tree = ET.parse(f"{os.path.join(config["abs_path_to_ndpa_dir"], file_no_extension)}.ndpi.ndpa")
+    tree = ET.parse(f"{os.path.join(config['abs_path_to_ndpa_dir'], file_no_extension)}.ndpi.ndpa")
     root = tree.getroot()
     for viewstate in root.findall("ndpviewstate"):
         annotation = viewstate.find("annotation")

@@ -1,7 +1,7 @@
 import os
-from entities.ndpa import Ndpa
-from tools.coordinate_space_convertor import nanozoomer_to_pixelwise
-from tools.ndpi_metadata_extractor import extract_ndpi_metadata
+from src.entities.ndpa import Ndpa
+from src.tools.coordinate_space_convertor import nanozoomer_to_pixelwise
+from src.tools.ndpi_metadata_extractor import extract_ndpi_metadata
 from src import config
 from pathlib import Path
 import csv
@@ -50,9 +50,9 @@ def annotation_tile_determiner(c_x_px, c_y_px, radius_px, filename):
         topleft_x, topleft_y = map(int, tile[:-1].split('x_')) # parse the tile directory name to extract x and y pixel coordinate of top left tile corner
         # check if the annotation circle extends beyond the boundary of the current tile
         if not (((c_y_px - radius_px) < topleft_y) or # beyond top of tile
-            ((c_y_px + radius_px) > (topleft_y + tile_size)) or # beyond bottom of tile
+            ((c_y_px + radius_px) > (topleft_y + config['tile_size'])) or # beyond bottom of tile
             ((c_x_px - radius_px) < topleft_x) or # beyond left side of tile
-            ((c_x_px + radius_px) > topleft_x + tile_size)): # beyond right side of tile 
+            ((c_x_px + radius_px) > topleft_x + config['tile_size'])): # beyond right side of tile 
             within_tile_list.append(tile)
     return within_tile_list
 
@@ -93,29 +93,36 @@ def create_master_annotation_csv():
 
         for file in os.listdir(ndpa_directory):
             ndpa = Ndpa(os.path.join(ndpa_directory, file))
+            print(ndpa.absolute_file_path)
+            print(ndpa.filename)
+            print(ndpa.annotated_region)
+            print(ndpa.annotations)
             for annot_id, annotation_obj in ndpa.annotations.items():
                 specimen_name = file.rsplit('.', 2)[0]
-                palynomorph_category = species_to_category[annotation_obj.label]
+                palynomorph_category = species_to_category[annotation_obj.label.lower()]
                 radius_nm = annotation_obj.radius_nm
                 center_nm = (annotation_obj.center_x_nm, annotation_obj.center_y_nm)
                 tl_nm, bl_nm, tr_nm, br_nm = bounding_box_generator(center_nm, radius_nm)
 
                 # convert from nanozoomer corodinate space to pixel-wise coordinate space
-                center_px = nanozoomer_to_pixelwise(center_nm[0], center_nm[1], f"{os.path.join(config["abs_path_to_ndpi_dir"], specimen_name)}.ndpi")
-                tl_px = nanozoomer_to_pixelwise(tl_nm[0], tl_nm[1], f"{os.path.join(config["abs_path_to_ndpi_dir"], specimen_name)}.ndpi")
-                bl_px = nanozoomer_to_pixelwise(bl_nm[0], bl_nm[1], f"{os.path.join(config["abs_path_to_ndpi_dir"], specimen_name)}.ndpi")
-                tr_px = nanozoomer_to_pixelwise(tr_nm[0], tr_nm[1], f"{os.path.join(config["abs_path_to_ndpi_dir"], specimen_name)}.ndpi")
-                br_px = nanozoomer_to_pixelwise(br_nm[0], br_nm[1], f"{os.path.join(config["abs_path_to_ndpi_dir"], specimen_name)}.ndpi")
+                center_px = nanozoomer_to_pixelwise(center_nm[0], center_nm[1], f"{os.path.join(config['abs_path_to_ndpi_dir'], specimen_name)}.ndpi")
+                tl_px = nanozoomer_to_pixelwise(tl_nm[0], tl_nm[1], f"{os.path.join(config['abs_path_to_ndpi_dir'], specimen_name)}.ndpi")
+                bl_px = nanozoomer_to_pixelwise(bl_nm[0], bl_nm[1], f"{os.path.join(config['abs_path_to_ndpi_dir'], specimen_name)}.ndpi")
+                tr_px = nanozoomer_to_pixelwise(tr_nm[0], tr_nm[1], f"{os.path.join(config['abs_path_to_ndpi_dir'], specimen_name)}.ndpi")
+                br_px = nanozoomer_to_pixelwise(br_nm[0], br_nm[1], f"{os.path.join(config['abs_path_to_ndpi_dir'], specimen_name)}.ndpi")
                 
                 # convert radius from nm to px
-                ndpi_metadata = extract_ndpi_metadata(f"{os.path.join(config["abs_path_to_ndpi_dir"], specimen_name)}.ndpi")
+                ndpi_metadata = extract_ndpi_metadata(f"{os.path.join(config['abs_path_to_ndpi_dir'], specimen_name)}.ndpi")
                 nmpp_x = float(ndpi_metadata["openslide.mpp-x"]) * 1000 # mutiply by 1000 to convert from millimeters to nanometers 
                 radius_px = radius_nm // nmpp_x # just an arbitrary choice to use nm:px ratio for x direction instead of y
 
                 # within_tile_list is a list of the tiles that the current annotation belongs in
                 within_tile_list = annotation_tile_determiner(center_px[0], center_px[1], radius_px, specimen_name)
+
+                # convert center, tl, bl, tr, br to the within tile pixel coordinates
+                
                 
                 for tile in within_tile_list:
-                    row = {'filename':specimen_name, 'annot_id':str(annot_id), 'paly_type':palynomorph_category, 'center':str(center_px), 'radius':str(radius_px), 'TL':str(tl_px). 'BL':str(bl_px), 'TR':str(tr_px), 'BR':str(br_px), 'tile_id':tile}
+                    row = {'filename':specimen_name, 'annot_id':str(annot_id), 'paly_type':palynomorph_category, 'center':str(center_px), 'radius':str(radius_px), 'TL':str(tl_px), 'BL':str(bl_px), 'TR':str(tr_px), 'BR':str(br_px), 'tile_id':tile}
                     writer.writerow(row)
     return

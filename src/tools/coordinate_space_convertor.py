@@ -1,4 +1,4 @@
-from ndpi_metadata_extractor import extract_ndpi_metadata
+from src.tools.ndpi_metadata_extractor import extract_ndpi_metadata
 
 """
 This function applies a translation to an inputted point

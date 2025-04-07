@@ -1,7 +1,8 @@
-from tools.ndpi_metadata_extractor import extract_ndpi_metadata
-from tools.annotated_region_bounds_extractor import annotation_region_bounds_retrieval
-from tools.coordinate_space_convertor import nanozoomer_to_pixelwise
+from src.tools.ndpi_metadata_extractor import extract_ndpi_metadata
+from src.tools.annotated_region_bounds_extractor import annotation_region_bounds_retrieval
+from src.tools.coordinate_space_convertor import nanozoomer_to_pixelwise
 from src import config
+import subprocess
 import os
 
 """

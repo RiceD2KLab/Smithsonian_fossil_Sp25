@@ -1,6 +1,6 @@
 import os
 import xml.etree.ElementTree as ET
-from annotation import Annotation
+from src.entities.annotation import Annotation
 
 
 class Ndpa:
@@ -40,6 +40,7 @@ class Ndpa:
         # populate annotated_region
         self.populate_annotated_region()
         # populate annotations
+        self.populate_annotations()
 
     def populate_annotated_region(self):
         """
@@ -78,7 +79,7 @@ class Ndpa:
     
     def populate_annotations(self):
         """
-        This function populates the annotateds attribute of the Ndpa object. 
+        This function populates the annotations attribute of the Ndpa object. 
         Inputs:
             - None
         Returns:
