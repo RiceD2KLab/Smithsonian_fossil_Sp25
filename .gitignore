@@ -1,5 +1,5 @@
 venv/
 src/config.json
-src/__pycache__/
+__pycache__/
 *.py[cod]
 src/config.json
