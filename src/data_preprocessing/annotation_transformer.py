@@ -6,6 +6,7 @@ from src import config
 from pathlib import Path
 import csv
 import json
+import re
 
 """
 This function converts a given circular annotation to a rectangular bounding box. 
@@ -93,10 +94,6 @@ def create_master_annotation_csv():
 
         for file in os.listdir(ndpa_directory):
             ndpa = Ndpa(os.path.join(ndpa_directory, file))
-            print(ndpa.absolute_file_path)
-            print(ndpa.filename)
-            print(ndpa.annotated_region)
-            print(ndpa.annotations)
             for annot_id, annotation_obj in ndpa.annotations.items():
                 specimen_name = file.rsplit('.', 2)[0]
                 palynomorph_category = species_to_category[annotation_obj.label.lower()]
@@ -114,15 +111,22 @@ def create_master_annotation_csv():
                 # convert radius from nm to px
                 ndpi_metadata = extract_ndpi_metadata(f"{os.path.join(config['abs_path_to_ndpi_dir'], specimen_name)}.ndpi")
                 nmpp_x = float(ndpi_metadata["openslide.mpp-x"]) * 1000 # mutiply by 1000 to convert from millimeters to nanometers 
-                radius_px = radius_nm // nmpp_x # just an arbitrary choice to use nm:px ratio for x direction instead of y
+                radius_px = int(radius_nm // nmpp_x) # just an arbitrary choice to use nm:px ratio for x direction instead of y
 
                 # within_tile_list is a list of the tiles that the current annotation belongs in
                 within_tile_list = annotation_tile_determiner(center_px[0], center_px[1], radius_px, specimen_name)
-
-                # convert center, tl, bl, tr, br to the within tile pixel coordinates
-                
                 
                 for tile in within_tile_list:
-                    row = {'filename':specimen_name, 'annot_id':str(annot_id), 'paly_type':palynomorph_category, 'center':str(center_px), 'radius':str(radius_px), 'TL':str(tl_px), 'BL':str(bl_px), 'TR':str(tr_px), 'BR':str(br_px), 'tile_id':tile}
+                    # convert center, tl, bl, tr, br to the within tile pixel coordinates using the specific tile that the annotation lies in
+                    tile_top_left = re.findall(r'\d+', tile)
+                    tl_x = int(tile_top_left[0])
+                    tl_y = int(tile_top_left[1])
+                    within_tile_center_px = (int(center_px[0] - tl_x), int(center_px[1] - tl_y))
+                    within_tile_tl_px = (int(tl_px[0] - tl_x), int(tl_px[1] - tl_y))
+                    within_tile_bl_px = (int(bl_px[0] - tl_x), int(bl_px[1] - tl_y))
+                    within_tile_tr_px = (int(tr_px[0] - tl_x), int(tr_px[1] - tl_y))
+                    within_tile_br_px = (int(br_px[0] - tl_x), int(br_px[1] - tl_y))
+                    
+                    row = {'filename':specimen_name, 'annot_id':str(annot_id), 'paly_type':palynomorph_category, 'center':str(within_tile_center_px), 'radius':str(radius_px), 'TL':str(within_tile_tl_px), 'BL':str(within_tile_bl_px), 'TR':str(within_tile_tr_px), 'BR':str(within_tile_br_px), 'tile_id':tile}
                     writer.writerow(row)
     return
