@@ -51,7 +51,8 @@ This repository hosts the code for an automated machine-learning model designed 
 ### Python and Conda Installation
 1. Clone the repository:
    ```sh
-   git clone --recursive https://github.com/RiceD2KLab/Smithsonian_fossil_Sp25.git
+   git clone --recurse-submodules https://github.com/RiceD2KLab/Smithsonian_fossil_Sp25.git
+
    cd /Smithsonian_fossil_Sp25
    ```
 2. Install Python (recommended: version 3.9 or greater)
