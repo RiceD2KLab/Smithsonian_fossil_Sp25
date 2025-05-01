@@ -80,3 +80,35 @@ def nanozoomer_to_pixelwise(x_nm, y_nm, input_ndpi_file_path):
     shifted_coordinate_px = (shifted_coordinate_nm[0] // nmpp_x, shifted_coordinate_nm[1] // nmpp_y)
     return shifted_coordinate_px
 
+def pixelwise_to_nanozoomer(x_px, y_px, input_ndpi_file_path):
+    """
+    Converts pixel coordinates of a specific inputted NDPI file to nanozoomer global coordinate system.
+
+    Inputs:
+        - x_px: integer representing the x coordinate in the pixel coordinate system
+        - y_px: integer representing the y coordinate in the pixel coordinate system
+        - input_ndpi_file_path: string representing the absolute path of the NDPI file
+
+    Outputs:
+        - a two element tuple:
+            - first element is the x coordinate in nanometers in the nanozoomer global space
+            - second element is the y coordinate in nanometers in the nanozoomer global space
+    """
+    ndpi_metadata = extract_ndpi_metadata(input_ndpi_file_path)
+
+    # Get nm per pixel
+    nmpp_x = float(ndpi_metadata["openslide.mpp-x"]) * 1000  # mm to nm
+    nmpp_y = float(ndpi_metadata["openslide.mpp-y"]) * 1000  # mm to nm
+
+    # Convert from px to nm
+    x_nm_relative = x_px * nmpp_x
+    y_nm_relative = y_px * nmpp_y
+
+    # Get the top-left corner of the NDPI file in nanometer coordinates
+    ndpi_tl_coordinate_nm = find_ndpi_tl_coordinate(input_ndpi_file_path)
+
+    # Translate back to the NanoZoomer global coordinate system
+    x_nm = ndpi_tl_coordinate_nm[0] + x_nm_relative
+    y_nm = ndpi_tl_coordinate_nm[1] + y_nm_relative
+
+    return (int(x_nm), int(y_nm))
