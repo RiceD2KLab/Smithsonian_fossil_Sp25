@@ -23,7 +23,8 @@ def config_setup(abs_path_to_baseline_config_json):
     # prompt user for inputs while creating config dictionary
     baseline_config = {
         "abs_path_to_reformatted_tile_directory": input("Enter the absolute path to a directory to store reformatted tiles for baseline model: "),
-        "abs_path_to_baseline_model_output": input("Enter the absolute path to the location for where to store the baseline model outputs: ")
+        "abs_path_to_baseline_model_output": input("Enter the absolute path to the location for where to store the baseline model outputs: "),
+        "abs_path_to_ndpa_output_directory": input("Enter the absolute path to the directory for where to store output NDPA file of the baseline model: ")
     }
     with open(abs_path_to_baseline_config_json, 'w') as f:
         json.dump(baseline_config, f, indent=4)
@@ -104,6 +105,18 @@ def baseline_input_preparation(abs_path_to_original_tiles_dir, abs_path_to_refor
 
                 # Save the resized image back to the same path (overwrite)
                 img_resized.save(focal_plane_path)
+    return
+
+"""
+This function generates an NDPA file for the predictions. 
+
+Inputs:
+
+Returns:
+
+"""
+def create_ndpa():
+    
     return
 
 """

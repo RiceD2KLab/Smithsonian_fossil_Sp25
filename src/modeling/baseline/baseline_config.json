@@ -1,4 +1,5 @@
 {
     "abs_path_to_reformatted_tile_directory":"",
-    "abs_path_to_baseline_model_output":""
+    "abs_path_to_baseline_model_output":"",
+    "abs_path_to_ndpa_output_directory":""
 }
