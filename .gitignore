@@ -3,3 +3,4 @@ src/config.json
 __pycache__/
 *.py[cod]
 src/config.json
+src/modeling/baseline/baseline_config.json
