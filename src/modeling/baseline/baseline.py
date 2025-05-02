@@ -3,6 +3,7 @@ import os
 import shutil
 from PIL import Image
 from torchvision import transforms
+import subprocess
 
 from src.modeling.baseline import baseline_config
 from src.tools.coordinate_space_convertor import pixelwise_to_nanozoomer
@@ -63,8 +64,8 @@ def baseline_input_preparation(abs_path_to_original_tiles_dir, abs_path_to_refor
     valid_indices = set(str(i) for i in range(0, 25, 3))  # {'0', '3', '6', ..., '24'}
     
     # iterate over each of the ndpi's
-    for ndpi_tiles in os.listdir(source_dir):
-        ndpi_tiles_path = os.path.join(source_dir, ndpi_tiles)
+    for ndpi_tiles in os.listdir(abs_path_to_original_tiles_dir):
+        ndpi_tiles_path = os.path.join(abs_path_to_original_tiles_dir, ndpi_tiles)
         if not os.path.isdir(ndpi_tiles_path):
             continue
         
@@ -75,8 +76,8 @@ def baseline_input_preparation(abs_path_to_original_tiles_dir, abs_path_to_refor
                 continue
             
             
-            rel_path = os.path.relpath(tile_path, source_dir)
-            dest_subdir = os.path.join(destination_dir, rel_path)
+            rel_path = os.path.relpath(tile_path, abs_path_to_original_tiles_dir)
+            dest_subdir = os.path.join(abs_path_to_reformatted_tile_dir, rel_path)
             os.makedirs(dest_subdir, exist_ok=True) # make directory for each individual tile
 
             # iterate over each individual focal plane in the tile
@@ -234,7 +235,7 @@ def save_ndpas(abs_path_to_detections_dir, abs_path_to_ndpa_output_directory, pr
 
         # attribute each bounding box with it's corresponding score
         id = 1
-        for box, score in zip(ndpi_bboxes, ndpi_bboxes_prediction_scores)
+        for box, score in zip(ndpi_bboxes, ndpi_bboxes_prediction_scores):
             ndpviewstate = create_ndpviewstate(id, score, box, ndpi_sample_name)
             root.append(ndpviewstate)
             id += 1
