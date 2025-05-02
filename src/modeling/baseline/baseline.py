@@ -6,7 +6,7 @@ from torchvision import transforms
 
 from src.modeling.baseline import baseline_config
 from src.tools.coordinate_space_convertor import pixelwise_to_nanozoomer
-from src.evaluation.baseline.baseline_eval import extract_all_prediction_bboxes # maybe not need this
+from src.evaluation.baseline.baseline_eval import extract_all_prediction_bboxes 
 
 """
 This function prompts the user to define a couple different file system paths for:
@@ -15,25 +15,26 @@ This function prompts the user to define a couple different file system paths fo
     - ndpa output directory
 
 Inputs: 
-    - abs_path_to_baseline_config_json: string representing the absolute path to the baseline_config.json file
+    - None
 
 Returns: 
     - none
-    - populates /.../modlin/baseline/baseline_config.json
+    - populates /.../modling/baseline/baseline_config.json
 """
-def config_setup(abs_path_to_baseline_config_json):
+def baseline_config_setup():
     # Define the path to config.json relative to this script
     print("Welcome to the setup script! Please provide the following configurations:\n")
     
     # prompt user for inputs while creating config dictionary
     baseline_config = {
-        "abs_path_to_reformatted_tile_directory": input("Enter the absolute path to a directory to store reformatted tiles for baseline model: "),
+        "abs_path_to_reformatted_tiles_directory": input("Enter the absolute path to a directory to store reformatted tiles for baseline model: "),
         "abs_path_to_ndpa_output_directory": input("Enter the absolute path to the directory for where to store output NDPA file of the baseline model: "),
         "confidence_threshold_for_predictions": input("Enter a confidence threshold (decimal ex: 0.004) for making predictions: "),
         "abs_path_to_baseline_model_outputs": input("Enter the absolute path to the location for where to store the baseline model outputs: "),
+        "abs_path_to_baseline_eval_results_dir": input("Enter the absolute path to the directory for where to store the evaluation metric results of the baseline model: "),
         "abs_path_to_ndpis_dir": input("Enter absolute path to directory of all ndpi images: ")
     }
-    with open(abs_path_to_baseline_config_json, 'w') as f:
+    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "baseline_config.json"), 'w') as f:
         json.dump(baseline_config, f, indent=4)
     
     return
