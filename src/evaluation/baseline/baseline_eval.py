@@ -67,6 +67,7 @@ Returns:
     - pred_scores: a mapping where the keys are strings representing filenames, and the values are a list of floats
         where the floats represent the confidence scores of the boxes in the same order of the boxes listed in the 
         values for each key-value pair of an image in pred_boxes
+        ex. {"D9151-A-2_L_2024_02_02_16_08_52_Texas" : [0.8, 0.7]}
     - pred_labels: a mapping where the keys are strings representing filenames, and the values are a list of n 0s, 
         where n is the number of boxes in pred_boxes. 0 is the label representing pollen. 
         ex. {"D9151-A-2_L_2024_02_02_16_08_52_Texas" : [0, 0]}

@@ -1,5 +1,7 @@
 {
     "abs_path_to_reformatted_tile_directory":"",
+    "abs_path_to_ndpa_output_directory":"",
+    "confidence_threshold_for_predictions":0,
     "abs_path_to_baseline_model_output":"",
-    "abs_path_to_ndpa_output_directory":""
+    "abs_path_to_ndpis_dir":""
 }
