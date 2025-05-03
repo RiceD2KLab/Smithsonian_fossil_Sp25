@@ -1,6 +1,6 @@
 import torch
 from config_extractor import load_config as detr_load_config
-from config_extractor import load_config as project_load_config
+from scripts.config_extractor import load_config as project_load_config
 from detr_utils import (
     batch_predict,
     apply_tile_level_nms,

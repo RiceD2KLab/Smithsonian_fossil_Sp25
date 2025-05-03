@@ -38,7 +38,8 @@ def pre_scan_images(image_root: Path) -> Dict[str, Path]:
 def convert_csv_to_coco(
     csv_path: Path,
     image_root: Path,
-    output_json: Path
+    output_json: Path,
+    focal_length=25
 ) -> None:
     """
     Convert annotation CSV into COCO JSON.
@@ -63,7 +64,7 @@ def convert_csv_to_coco(
             cat_id = categories.setdefault(label, len(categories))
             base = row['filename'].replace('.ndpi.ndpa', '')
             tile = row['tile_id']
-            for z in range(25):
+            for z in range(focal_length):
                 rel = f"{base}/{tile}/{z}z.png"
                 path = available.get(rel)
                 if not path:
