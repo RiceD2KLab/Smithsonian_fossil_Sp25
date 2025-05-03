@@ -42,7 +42,7 @@ baseline_outputs/
 `model_outputs`: This subdirectory stores all the direct outputs of the model. The structure of the model_outputs directory is as follows:
 ```
 model_outputs/
---> <ndpi_filename>_<tile_id>_<detection number>/ # detection number
+--> <ndpi_filename>_<tile_id>_<detection number>/ # detection by ndpi, tile_id, and detection number
   --> 0z.png # detection crop at focal plane 1
   --> ...
   --> 8z.png # detection crop at focal plane 9
