@@ -21,25 +21,31 @@ cd scripts
 python baseline_modeling.py
 ```
 This script will first prompt the user to input some configurations:
-- directory location for the baseline outputs: The baseline model will generate a directory called "baseline_outputs". User will input a directory where the model can store this "baseline_outputs" folder
-- prediction confidence threshold: This represents the confidence threshold at which to include predictions in the outputs and evaluation
+- directory location for the baseline outputs: The baseline model will generate a directory called "baseline_outputs". User will input text representing the absolute path to the directory where the model can store this "baseline_outputs" folder
+- prediction confidence threshold: This represents the confidence threshold at which to include predictions in the outputs and evaluation. User will input a decimal value between 0.0 and 1.0 
 
 After the model is finished running, the "baseline_outputs" folder will have the following structure:
 ```
 baseline_outputs/
+--> baseline_eval_results.txt
 --> reformatted_tiles/
 --> prediction_ndpas/
 --> model_outputs/
---> baseline_eval_results.txt
 ```
 
 ## Description of Outputs
-`reformatted tiles/`: This subdirectory stores the tiles in the format that the model expects. Particularly, the data is transformed from 25, 2048x2048 focal planes for each tile, to 9, 1024x1024 focal planes per tile. The focal planes chosen were even spaced from the original 25 focal planes. 
+#### `baseline_eval_results.txt`
+This text file contains the mean average precision results of the model. See top level README for more information. 
 
-`prediction_ndpas/`: This subdirectory stores all generated ndpa files that store predictions. The naming convention of the ndpa files is 'sample_name.ndpi_predictions.ndpa'.
+#### `reformatted tiles/`
+This subdirectory stores the tiles in the format that the model expects for input. Particularly, the data is transformed from 25, 2048x2048 focal planes for each tile, to 9, 1024x1024 focal planes per tile. The focal planes chosen were even spaced from the original 25 focal planes. The structure of this subdirectory is the same structure as the ndpi_tiles directory in the image preprocessing step
+
+#### `prediction_ndpas/`
+This subdirectory stores all generated ndpa files that store predictions. The naming convention of the ndpa files is 'sample_name.ndpi_predictions.ndpa'.
 - ex. `D3094_1_L_2024_02_20_11_32_26_Colorado.ndpi_predictions.ndpa`
 
-`model_outputs/`: This subdirectory stores all the direct outputs of the model. The structure of the model_outputs directory is as follows:
+#### `model_outputs/`
+This subdirectory stores all the direct outputs of the model. The structure of the model_outputs directory is as follows:
 ```
 model_outputs/
 --> <ndpi_filename>_<tile_id>_<detection number>/ # detection by ndpi, tile_id, and detection number
@@ -65,5 +71,3 @@ model_outputs/
 ...
 ```
 What the above structure means is that for the Colorado file, there were 2 detections in the 51767x_36884y tile, and only 1 detection in the 55931x_38272y tile. For the Tennessee file, there was 1 detection for the 58013x_48900 tile, and 1 detection for the 59402x_50288y tile. 
-
-`baseline_eval_results.txt`: this text file contains the mean average precision results of the model. See top level README for more information. 
