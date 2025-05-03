@@ -64,7 +64,6 @@ def main(config_path="../detr/detr_config.json"):
     # Step 6: Save model
     torch.save(model.state_dict(), "../detr/detr_pollen.pth")
 
-
     print("Pipeline complete.")
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from collections import defaultdict
 import xml.etree.ElementTree as ET
+import os
 
 import torch
 from torch.utils.data import DataLoader
@@ -347,3 +348,95 @@ def predictions_to_ndpa(
         out_path=output_dir/f"{slide}.ndpa"
         ET.ElementTree(annotations).write(out_path,encoding='utf-8',xml_declaration=True)
     logger.info(f"Finished writing NDPA files to {output_dir}")
+
+def predict_image(model, processor, image_path: str, device: str, threshold: float = 0.5):
+    """
+    Run inference on a single image and return raw boxes, labels, scores.
+
+    Returns:
+        dict with 'boxes', 'labels', 'scores'
+    """
+    image = Image.open(image_path).convert("RGB")
+    inputs = processor(images=image, return_tensors="pt").to(device)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    post = processor.post_process_object_detection(
+        outputs, threshold=threshold, target_sizes=[image.size[::-1]]
+    )[0]
+    return {
+        'boxes': post['boxes'].cpu().tolist(),
+        'labels': post['labels'].cpu().tolist(),
+        'scores': post['scores'].cpu().tolist()
+    }
+
+def batch_predict(model, processor, image_dir: str, device: str, threshold: float = 0.5):
+    """
+    Recursively iterate over nested image directory structure and collect predictions.
+
+    Returns:
+        list of predictions per image
+    """
+    preds = []
+    for root, _, files in os.walk(image_dir):
+        for fname in files:
+            if not fname.lower().endswith(('.png', '.jpg')):
+                continue
+            img_path = os.path.join(root, fname)
+            result = predict_image(model, processor, img_path, device, threshold)
+            # Save relative path from image_dir for traceability
+            rel_path = os.path.relpath(img_path, image_dir)
+            preds.append({
+                'file_name': rel_path,
+                'boxes': result['boxes'],
+                'labels': result['labels'],
+                'scores': result['scores']
+            })
+    return preds
+
+def apply_tile_level_nms(predictions, iou_threshold=0.5):
+    """
+    Apply NMS across focal planes for each tile_id in the predictions list.
+
+    Args:
+        predictions: List of dicts with keys: 'file_name', 'boxes', 'labels', 'scores'
+        iou_threshold: IOU threshold for NMS
+
+    Returns:
+        List of filtered predictions (after NMS per tile_id)
+    """
+    tile_groups = defaultdict(list)
+
+    # Group predictions by tile_id
+    for pred in predictions:
+        tile_id = get_tile_id(pred['file_name'])
+        if tile_id is None:
+            continue
+        for box, label, score in zip(pred['boxes'], pred['labels'], pred['scores']):
+            tile_groups[tile_id].append({
+                'file_name': pred['file_name'],
+                'box': torch.tensor(box),
+                'label': label,
+                'score': score
+            })
+
+    # Apply NMS to each tile group
+    filtered_preds = []
+    for tile_id, preds in tile_groups.items():
+        if not preds:
+            continue
+        boxes = torch.stack([p['box'] for p in preds])
+        scores = torch.tensor([p['score'] for p in preds])
+        labels = [p['label'] for p in preds]
+        file_names = [p['file_name'] for p in preds]
+
+        keep_idxs = nms(boxes, scores, iou_threshold)
+
+        for idx in keep_idxs:
+            filtered_preds.append({
+                'file_name': file_names[idx],
+                'boxes': boxes[idx].tolist(),
+                'labels': labels[idx],
+                'scores': scores[idx].item()
+            })
+
+    return filtered_preds
