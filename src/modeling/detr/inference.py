@@ -1,7 +1,7 @@
 import torch
 from config_extractor import load_config as detr_load_config
 from config_extractor import load_config as project_load_config
-from detr_utils import (  # Replace with actual module or path
+from detr_utils import (
     batch_predict,
     apply_tile_level_nms,
     predictions_to_ndpa,
