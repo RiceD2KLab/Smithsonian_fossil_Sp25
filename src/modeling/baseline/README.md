@@ -33,7 +33,7 @@ baseline_outputs/
 --> baseline_eval_results.txt
 ```
 
-### Description of Outputs
+## Description of Outputs
 `reformatted tiles`: This subdirectory stores the tiles in the format that the model expects. Particularly, the data is transformed from 25, 2048x2048 focal planes for each tile, to 9, 1024x1024 focal planes per tile. The focal planes chosen were even spaced from the original 25 focal planes. 
 
 `prediction_ndpas`: This subdirectory stores all generated ndpa files that store predictions. The naming convention of the ndpa files is 'sample_name.ndpi_predictions.ndpa'.
