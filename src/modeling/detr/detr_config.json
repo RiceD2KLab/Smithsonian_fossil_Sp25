@@ -3,6 +3,6 @@
     "nms_iou_threshold": 0.5,
     "num_labels": 5,
     "model_name": "facebook/detr-resnet-50",
-    "weighs_path": "./detr_pollen_no_indet.pth",
+    "weights_path": "./detr_pollen_no_indet.pth",
     "ndpa_output_dir": "./tmp/"
 }
