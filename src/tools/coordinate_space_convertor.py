@@ -1,6 +1,5 @@
 from src.tools.ndpi_metadata_extractor import extract_ndpi_metadata
 import xml.etree.ElementTree as ET
-from xml.dom import minidom
 
 """
 This function applies a translation to an inputted point
