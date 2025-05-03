@@ -1,21 +1,16 @@
 # Baseline: Segmentation model
 This model is a segmentation model that has been taken from ____________________
 
-## Setup
-Before running the model, a few directories need to be manually created in the user's file system.
-- baseline model outputs: This directory will store the outputs of the baseline model. i.e image crops, masks, metadatas, etc.
-- prediction ndpa outputs: This directory will store the NDPA files housing the predictions of each of the ndpis
-- baseline evaluation results: This directory will hold a txt file of the evaluation metrics calculated with the inputted ndpa files.
-- reformatted tiles: This directory will have the same structure as the ndpi tiles directory that stores the output tiles of the image preprocessing. However, the pngs are resized and subsetted to fit requirements of this model.
+--insert run statement for baseline_modling_script--
 
-IDEAA:
-- only prompt user for confidence threshold
-- create folders and directories on own.
+This script will first prompt the user to input some configurations:
+- directory location for the baseline outputs: The baseline model will generate a directory called "baseline_outputs". User will input a directory where the model can store this "baseline_outputs" folder
+- prediction confidence threshold: This represents the confidence threshold at which to include predictions in the outputs and evaluation
 
-- 
-
-After manually creating those files, 
-There are a couple tasks that still need to be done:
-
-Set up necessary directories
+After the model is finished running, the "baseline_outputs" folder will have the following structure:
+--insert code block that represents the directory strucutre --
+prediction_ndpas: This subdirectory stores all generated ndpa files that store predictions. The naming convention of the ndpa files is 'sample_name.ndpi_predictions.ndpa'.
+- ex. D3094_1_L_2024_02_20_11_32_26_Colorado.ndpi_predictions.ndpa
+baseline_eval_results.txt: this is a .txt file that stores the mean average precision results of evaluation for the model.
+reformatted tiles: This subdirectory stores the 
 
