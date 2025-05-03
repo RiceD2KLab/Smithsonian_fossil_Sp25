@@ -1,5 +1,6 @@
 from src.tools.ndpi_metadata_extractor import extract_ndpi_metadata
 import xml.etree.ElementTree as ET
+from xml.dom import minidom
 
 """
 This function applies a translation to an inputted point
@@ -183,6 +184,7 @@ def write_predictions_to_ndpa_for_faster_rcnn(predictions, output_path, lens_val
             "displayname": "AnnotateRectangle",
             "color": "#000000"
         })
+        
         ET.SubElement(annotation, "measuretype").text = "2"
         ET.SubElement(annotation, "closed").text = "1"
 
@@ -201,7 +203,10 @@ def write_predictions_to_ndpa_for_faster_rcnn(predictions, output_path, lens_val
 
         ET.SubElement(annotation, "specialtype").text = "rectangle"
 
-    # Write XML to file
-    tree = ET.ElementTree(annotations)
-    tree.write(output_path, encoding="utf-8", xml_declaration=True)
+    # ✅ Pretty-print XML output
+    rough_string = ET.tostring(annotations, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
+    with open(output_path, "w") as f:
+        f.write(reparsed.toprettyxml(indent="  "))
+
     print(f"✅ NDPA file written to: {output_path}")

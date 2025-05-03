@@ -1,8 +1,8 @@
 {
-    "abs_path_to_ndpi_dir": "",
-    "abs_path_to_ndpa_dir": "",
-    "abs_path_to_location_for_master_annotation_csv": "",
-    "abs_path_to_ndpi_tiles_dir": "",
-    "tile_size": null,
-    "tile_overlap": null
+    "abs_path_to_ndpi_dir": "/storage/hpc/work/dsci435/smithsonian/ndpi_subset",
+    "abs_path_to_ndpa_dir": "/storage/hpc/work/dsci435/smithsonian/ndpa_subset",
+    "abs_path_to_location_for_master_annotation_csv": "/storage/hpc/work/dsci435/smithsonian/master_annotations_csv",
+    "abs_path_to_ndpi_tiles_dir": "/storage/hpc/work/dsci435/smithsonian/ndpi_tiles",
+    "tile_size": 660,
+    "tile_overlap": 2048
 }

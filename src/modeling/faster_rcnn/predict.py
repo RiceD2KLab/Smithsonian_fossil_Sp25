@@ -4,7 +4,7 @@ import torch
 import torchvision.ops as ops
 from PIL import Image
 from torchvision import transforms
-from utils import draw_image
+from .utils import draw_image
 
 # Global transform
 transform = transforms.Compose([transforms.ToTensor()])
