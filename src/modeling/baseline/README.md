@@ -34,12 +34,12 @@ baseline_outputs/
 ```
 
 ## Description of Outputs
-`reformatted tiles`: This subdirectory stores the tiles in the format that the model expects. Particularly, the data is transformed from 25, 2048x2048 focal planes for each tile, to 9, 1024x1024 focal planes per tile. The focal planes chosen were even spaced from the original 25 focal planes. 
+`reformatted tiles/`: This subdirectory stores the tiles in the format that the model expects. Particularly, the data is transformed from 25, 2048x2048 focal planes for each tile, to 9, 1024x1024 focal planes per tile. The focal planes chosen were even spaced from the original 25 focal planes. 
 
-`prediction_ndpas`: This subdirectory stores all generated ndpa files that store predictions. The naming convention of the ndpa files is 'sample_name.ndpi_predictions.ndpa'.
+`prediction_ndpas/`: This subdirectory stores all generated ndpa files that store predictions. The naming convention of the ndpa files is 'sample_name.ndpi_predictions.ndpa'.
 - ex. `D3094_1_L_2024_02_20_11_32_26_Colorado.ndpi_predictions.ndpa`
 
-`model_outputs`: This subdirectory stores all the direct outputs of the model. The structure of the model_outputs directory is as follows:
+`model_outputs/`: This subdirectory stores all the direct outputs of the model. The structure of the model_outputs directory is as follows:
 ```
 model_outputs/
 --> <ndpi_filename>_<tile_id>_<detection number>/ # detection by ndpi, tile_id, and detection number
