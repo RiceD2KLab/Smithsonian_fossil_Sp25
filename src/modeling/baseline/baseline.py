@@ -9,34 +9,46 @@ from torchvision import transforms
 import subprocess
 
 from src.modeling.baseline import baseline_config
+from src import config
 from src.tools.coordinate_space_convertor import pixelwise_to_nanozoomer
 from src.evaluation.baseline.baseline_eval import extract_all_prediction_bboxes 
 
 """
 This function prompts the user to define a couple different file system paths for:
-    - baseline model outputs
+    - baseline outputs
     - re_formatted tile inputs (9 focal plane subset of original 25 tiles, and tiles resized to 1024)
-    - ndpa output directory
 
 Inputs: 
     - None
 
 Returns: 
     - none
+    - creates baseline_outputs directory and subdirectories within it
     - populates /.../modling/baseline/baseline_config.json
 """
 def baseline_config_setup():
-    # Define the path to config.json relative to this script
+
     print("Welcome to the baseline model setup script! Please provide the following configurations:\n")
     
-    # prompt user for inputs while creating config dictionary
+    # prompt user for inputs 
+    abs_path_to_baseline_outputs_dir = input("Enter the absolute path to the directory that will hold the baseline model outputs: ")
+    confidence_threshold_for_predictions = float(input("Enter a confidence threshold (decimal ex: 0.004) for making predictions: "))
+    
+    # create dirs and subdirs
+    abs_path_to_baseline_outputs = os.path.join(abs_path_to_baseline_outputs_dir, "baseline_outputs")
+    os.makedirs(abs_path_to_baseline_outputs, exist_ok=True)
+    os.makedirs(os.path.join(abs_path_to_baseline_outputs, "prediction_ndpas"))
+    os.makedirs(os.path.join(abs_path_to_baseline_outputs, "reformatted_tiles"))
+    os.makedirs(os.path.join(abs_path_to_baseline_outputs, "model_outputs"))
+
+
     baseline_config = {
-        "abs_path_to_reformatted_tiles_directory": input("Enter the absolute path to a directory to store reformatted tiles for baseline model: "),
-        "abs_path_to_ndpa_output_directory": input("Enter the absolute path to the directory for where to store output NDPA file of the baseline model: "),
-        "confidence_threshold_for_predictions": float(input("Enter a confidence threshold (decimal ex: 0.004) for making predictions: ")),
-        "abs_path_to_baseline_model_outputs": input("Enter the absolute path to the location for where to store the baseline model outputs: "),
-        "abs_path_to_baseline_eval_results_dir": input("Enter the absolute path to the directory for where to store the evaluation metric results of the baseline model: "),
-        "abs_path_to_ndpis_dir": input("Enter absolute path to directory of all ndpi images: ")
+        "abs_path_to_baseline_outputs_dir": abs_path_to_baseline_outputs_dir,
+        "abs_path_to_reformatted_tiles_directory": os.path.join(abs_path_to_baseline_outputs, "reformatted_tiles"),
+        "abs_path_to_ndpa_output_directory": os.path.join(abs_path_to_baseline_outputs, "prediction_ndpas"),
+        "confidence_threshold_for_predictions": confidence_threshold_for_predictions,
+        "abs_path_to_baseline_model_outputs": os.path.join(abs_path_to_baseline_outputs, "model_outputs"),
+        "abs_path_to_baseline_eval_results_dir": abs_path_to_baseline_outputs,
     }
     with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "baseline_config.json"), 'w') as f:
         json.dump(baseline_config, f, indent=4)
@@ -236,7 +248,7 @@ def create_ndpviewstate(id, confidence_score, bbox, ndpi_sample_name):
 
     # convert bounding box coordinates to nanozoomer format
     for i in range(4):
-        points[i] = pixelwise_to_nanozoomer(points[i][0], points[i][1], os.path.join(baseline_config["abs_path_to_ndpis_dir"], f"{ndpi_sample_name}.ndpi"))
+        points[i] = pixelwise_to_nanozoomer(points[i][0], points[i][1], os.path.join(config["abs_path_to_ndpis_dir"], f"{ndpi_sample_name}.ndpi"))
     
     # add each point to the ndpviewstate tree
     for x_val, y_val in points:
