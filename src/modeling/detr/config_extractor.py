@@ -20,8 +20,8 @@ def load_config(config_path):
         "nms_iou_threshold",
         "num_labels",
         "model_name",
-        "weighs_path",
-        "ndpa_output_dir"
+        "weights_path",
+        "output_dir"
     ]
 
     missing = [k for k in required_keys if k not in config]
