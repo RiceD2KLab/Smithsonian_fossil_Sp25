@@ -1,22 +1,22 @@
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 import torch
 from config_extractor import load_config as detr_load_config
-from scripts.config_extractor import load_config as project_load_config
 from detr_utils import (
     batch_predict,
     apply_tile_level_nms,
     predictions_to_ndpa,
     initialize_model
 )
+from src import config as project_config
+
 
 def main(config_path="detr_config.json"):
     # Step 1: Load config
     config = detr_load_config(config_path)
-    project_config = project_load_config("../detr_config.json")
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # Step 2: Load model + processor

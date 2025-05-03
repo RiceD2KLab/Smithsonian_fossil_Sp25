@@ -19,3 +19,4 @@ transformers>=4.26.0
 matplotlib>=3.4.3
 tqdm>=4.62.3
 pycocotools>=2.0.4
+timm>=0.4.12

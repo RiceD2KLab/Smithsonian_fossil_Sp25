@@ -3,12 +3,12 @@ from detr_utils import (
     split_by_tile_id,
     filter_category
 )
-from scripts.config_extractor import load_config as project_load_config
 from src.modeling.detr.config_extractor import load_config as detr_load_config
+from src import config as project_config
+
 
 def main(config_path="config.json"):
     config = detr_load_config(config_path)
-    project_config = project_load_config("../detr_config.json")
 
     convert_csv_to_coco(
     csv_path=project_config["abs_path_to_location_for_master_annotation_csv"],

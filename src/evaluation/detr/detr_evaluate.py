@@ -1,18 +1,15 @@
 import torch
 from src.modeling.detr.config_extractor import load_config as detr_load_config
-from scripts.config_extractor import load_config as project_load_config
 from src.modeling.detr.detr_utils import (
-    collate_fn,
     initialize_model,
-    CocoDetectionTransform,
-    DataLoader,
     evaluate_coco
 )
+
+from src import config as project_config
 
 def main(config_path="../../modeling/detr/detr_config.json"):
     # Step 1: Load config
     config = detr_load_config(config_path)
-    project_config = project_load_config("../../config.json")
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # Step 2: Load model + processor
