@@ -42,17 +42,28 @@ baseline_outputs/
 `model_outputs`: This subdirectory stores all the direct outputs of the model. The structure of the model_outputs directory is as follows:
 ```
 model_outputs/
---> <ndpi_filename_1>_<tile_id>_1/
-  --> 0z.png #detection crop at focal plane 1
+--> <ndpi_filename>_<tile_id>_<detection number>/ # detection number
+  --> 0z.png # detection crop at focal plane 1
   --> ...
-  --> 8z.png #detection crop at focal plane 9
-  --> mask_1.png #detection ask
-  --> metadata_1.json #details regarding the detection
-
-
+  --> 8z.png # detection crop at focal plane 9
+  --> mask_1.png # detection mask
+  --> metadata_1.json # details regarding the detection
+...
 ```
+For example,
+```
+model_outputs/
+--> D3094_1_L_2024_02_20_11_32_26_Colorado_51767x_36884y_1/ 
+  --> ...
+--> D3094_1_L_2024_02_20_11_32_26_Colorado_51767x_36884y_2/
+  --> ...
+--> D3094_1_L_2024_02_20_11_32_26_Colorado_55931x_38272y_1/
+  --> ...
+--> D5151-B-1_L_2024_02_02_15_31_05_Tennessee_58014x_48900y_1/
+  --> ...
+--> D5151-B-1_L_2024_02_02_15_31_05_Tennessee_59402x_50288y_1/
+...
+```
+What the above structure means is that for the Colorado file, there were 2 detections in the 51767x_36884y tile, and only 1 detection in the 55931x_38272y tile. For the Tennessee file, there was 1 detection for the 58013x_48900 tile, and 1 detection for the 59402x_50288y tile. 
 
-baseline_eval_results.txt: this text file contains the mean average precision results of the model. See top level README for more information. 
-
-
-
+`baseline_eval_results.txt`: this text file contains the mean average precision results of the model. See top level README for more information. 
