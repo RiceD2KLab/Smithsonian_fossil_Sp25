@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+
 import torch
 from config_extractor import load_config as detr_load_config
 from scripts.config_extractor import load_config as project_load_config
