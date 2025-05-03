@@ -45,7 +45,7 @@ model_outputs: This subdirectory stores all the direct outputs of the model.
 Explain model_outputs structure here 
 ```
 
-baseline_eval_results.txt: 
+baseline_eval_results.txt: this text file contains the mean average precision results of the model. See top level README for more information. 
 
 
 
