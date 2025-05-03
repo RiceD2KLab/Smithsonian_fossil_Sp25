@@ -22,6 +22,8 @@ def main(config_path="detr_config.json"):
         device
     )
 
+    print("Model initialized")
+
     # Step 3: Predict on image tiles
     raw_preds = batch_predict(
         model,
@@ -30,12 +32,14 @@ def main(config_path="detr_config.json"):
         device=device,
         threshold=config["confidence_prediction_threshold"]
     )
+    print("Computed raw predictions")
 
     # Step 4: Apply NMS per tile group
     filtered_preds = apply_tile_level_nms(
         raw_preds,
         iou_threshold=config["nms_iou_threshold"]
     )
+    print("Computed NMS")
 
     # Step 5: Write NDPA files per slide
     predictions_to_ndpa(
