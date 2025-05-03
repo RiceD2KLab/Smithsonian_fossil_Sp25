@@ -39,7 +39,6 @@ def baseline_config_setup():
     os.makedirs(abs_path_to_baseline_outputs, exist_ok=True)
     os.makedirs(os.path.join(abs_path_to_baseline_outputs, "prediction_ndpas"))
     os.makedirs(os.path.join(abs_path_to_baseline_outputs, "reformatted_tiles"))
-    os.makedirs(os.path.join(abs_path_to_baseline_outputs, "model_outputs"))
 
 
     baseline_config = {
@@ -153,7 +152,7 @@ def rename_baseline_outputs_dir(abs_path_to_baseline_model_outputs):
         full_path = os.path.join(base_dir, name)
 
         # Match a directory named baseline_outputs_<timestamp>
-        if os.path.isdir(full_path) and name.startswith("baseline_outputs_"):
+        if os.path.isdir(full_path) and name.startswith("model_outputs_"):
             # New name with timestamp removed
             new_path = os.path.join(base_dir, directory_name)
 
@@ -248,7 +247,7 @@ def create_ndpviewstate(id, confidence_score, bbox, ndpi_sample_name):
 
     # convert bounding box coordinates to nanozoomer format
     for i in range(4):
-        points[i] = pixelwise_to_nanozoomer(points[i][0], points[i][1], os.path.join(config["abs_path_to_ndpis_dir"], f"{ndpi_sample_name}.ndpi"))
+        points[i] = pixelwise_to_nanozoomer(points[i][0], points[i][1], os.path.join(config["abs_path_to_ndpi_dir"], f"{ndpi_sample_name}.ndpi"))
     
     # add each point to the ndpviewstate tree
     for x_val, y_val in points:
