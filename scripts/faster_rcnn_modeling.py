@@ -7,10 +7,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.modeling.faster_rcnn.model import load_model
 from src.modeling.faster_rcnn.predict import run_on_tile_multi_focus
-from src.tools.coordinate_space_convertor import convert_predictions_to_nanozoomer_for_faster_rcnn, write_predictions_to_ndpa_for_faster_rcnn
+from src.tools.faster_rcnn_predictions_to_ndpa import convert_predictions_to_nanozoomer_for_faster_rcnn, write_predictions_to_ndpa_for_faster_rcnn
 from src.modeling.faster_rcnn.dataset import TileDataset
 from src.modeling.faster_rcnn import load_config
-
 
 
 
