@@ -1,5 +1,5 @@
 # Baseline: Segmentation model
-This model is a segmentation model that has been taken from ____________________
+This is a pretrained segmentation model from _______. It takes, as input, multi-focal tile crops of an ndpi image and outputs bounding boxes of pollen detections within each tile, irrespective of the focal plane. It is important to note that this model is trained particularly on fossil pollen images to detect fossil pollen, whereas the image data and ground truth annotations provided by the Smithsonian include fossil palynomorphs, which fossil pollen are a sub category of. 
 
 ## Setup Virtual Environment
 Recommended Python version: 3.9
