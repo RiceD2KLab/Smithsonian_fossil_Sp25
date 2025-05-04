@@ -152,7 +152,7 @@ Work in progress...
 
 ## Acknowledgments/Citations
 
-This project uses the [ndpi-tile-cropper-cli](https://github.com/paleopollen/ndpi-tile-cropper-cli) repository, which provides a command-line interface for cropping NDPI tiles. Special thanks to **Punyasena, S. W.**, & **Satheesan, S. P.** for their work.
+This project uses the [ndpi-tile-cropper-cli](https://github.com/paleopollen/ndpi-tile-cropper-cli) repository, which provides a command-line interface for cropping NDPI tiles, and the [pollen-detection-cli](https://github.com/paleopollen/pollen-detection-cli) repository, which provides a segmentation model to detect pollens from cropped NDPI tiles. Special thanks to **Punyasena, S. W.**, & **Satheesan, S. P.** and the [Punyasena Paleoecology and Palynology Lab](https://github.com/paleopollen) for their work in these projects.
 
 .
 
