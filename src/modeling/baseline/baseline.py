@@ -33,6 +33,7 @@ def baseline_config_setup():
     # prompt user for inputs 
     abs_path_to_baseline_outputs_dir = input("Enter the absolute path to the directory that will hold the baseline model outputs: ")
     confidence_threshold_for_predictions = float(input("Enter a confidence threshold (decimal ex: 0.004) for making predictions: "))
+    abs_path_to_model_weights = input("Enter the absolute path to the pretrained model weights")
     
     # create dirs and subdirs
     abs_path_to_baseline_outputs = os.path.join(abs_path_to_baseline_outputs_dir, "baseline_outputs")
@@ -48,6 +49,7 @@ def baseline_config_setup():
         "confidence_threshold_for_predictions": confidence_threshold_for_predictions,
         "abs_path_to_baseline_model_outputs": os.path.join(abs_path_to_baseline_outputs, "model_outputs"),
         "abs_path_to_baseline_eval_results_dir": abs_path_to_baseline_outputs,
+        "abs_path_to_model_weights": abs_path_to_model_weights
     }
     with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "baseline_config.json"), 'w') as f:
         json.dump(baseline_config, f, indent=4)
@@ -176,12 +178,11 @@ Returns:
 """
 def baseline_run(abs_path_to_reformatted_tile_dir, abs_path_to_detections_dir):
     path_to_baseline_model_script = os.path.join(os.path.dirname(__file__), "pollen-detection-cli", "src", "pollen_detection_cli.py")
-    path_to_baseline_model_weights = os.path.join(os.path.dirname(__file__), "bestValModel_encoder.paramOnly")
 
     command = [
         "python",
         path_to_baseline_model_script,
-        "-m", path_to_baseline_model_weights,
+        "-m", baseline_config["abs_path_to_model_weights"],
         "-c", abs_path_to_reformatted_tile_dir,
         "-d", abs_path_to_detections_dir
     ]
