@@ -59,7 +59,7 @@ This repository hosts the code for an automated machine-learning model designed 
 3. Install Conda (if using virtual environments)
 4. Set up a virtual environment:
    ```sh
-   conda create --name myenv python=3.9
+   conda env create --name myenv python=3.9
    conda activate myenv
    ```
 5. Install dependencies from `requirements.txt`:
