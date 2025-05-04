@@ -14,6 +14,9 @@ pip install -r requirements.txt
 pip install openslide-python, pycocotools, torchmetrics
 ```
 
+## Manual Tweak to Code
+in line 71 of pollen-detection-cli/src/pollen_detector.py, change `self.conf_thresh = 0.20` to be `self.conf_thresh = 0.0`. While this allows for the detector to find ALL possible predictions first, then depending on user input, this project will be able to filter resulting predictions based on user input prediction confidence threshold (see below). 
+
 ## Run Baseline Modeling Script Via Command Line Interface
 To run the baseline model, run the `baseline_modeling.py` script located in `Smithsonian_fossil_Sp25/scripts`. See below
 ```
