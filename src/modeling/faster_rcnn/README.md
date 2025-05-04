@@ -1,3 +1,7 @@
+Got it — I’ve updated your README with the missing step for running the setup script and polished the overall structure for clarity:
+
+---
+
 # Faster R-CNN: Object Detection Model for Palynomorphs
 
 This directory contains the implementation of a Faster R-CNN object detection pipeline for localizing and classifying fossil palynomorphs in NDPI microscopy tiles. Unlike the segmentation-based baseline model, Faster R-CNN outputs bounding boxes and class predictions for each detection.
@@ -6,10 +10,12 @@ This directory contains the implementation of a Faster R-CNN object detection pi
 
 Faster R-CNN is a two-stage detector:
 
-1. A Region Proposal Network (RPN) first generates object proposals.
-2. These proposals are then classified and refined using a convolutional backbone (ResNet50 in our case).
+1. A Region Proposal Network (RPN) generates object proposals.
+2. These proposals are classified and refined using a convolutional backbone (ResNet50 in our case).
 
-We fine-tune a pretrained Faster R-CNN model (originally trained on COCO) to detect 7 palynomorph categories in our dataset. All model inputs are single focal plane crops of size 1024×1024, extracted from the center plane of each NDPI tile. During inference, Non-Maximum Suppression (NMS) is applied to remove overlapping detections.
+We fine-tune a pretrained Faster R-CNN model (originally trained on COCO) to detect 7 palynomorph categories. Each input is a single focal plane crop of size 1024×1024, extracted from the center plane of each NDPI tile. During inference, Non-Maximum Suppression (NMS) is applied to remove overlapping detections.
+
+---
 
 ## Setup Instructions
 
@@ -21,53 +27,68 @@ Recommended Python version: 3.9
 conda deactivate  # or 'deactivate' if using virtualenv
 conda create -n faster_rcnn_env python=3.9
 conda activate faster_rcnn_env
-pip install -r requirements.txt  # Make sure to include torchvision, torchmetrics, pandas, etc.
+pip install -r requirements.txt  # Includes torch, torchvision, pandas, etc.
 ```
+
+---
 
 ### 2. Directory Structure
 
 ```
 Smithsonian_fossil_Sp25/
 ├── scripts/
-│   └── faster_rcnn_modeling.py       # runs training
-│   └── faster_rcnn_eval.py           # runs evaluation and prints mAP
+│   ├── faster_rcnn_modeling.py       # Run training
+│   ├── faster_rcnn_eval.py           # Evaluate model (mAP)
+│   └── setup/
+│       └── setup_faster_rcnn_config.py  # Interactive setup script
 ├── src/
-│   └── modeling/
-│       └── faster_rcnn.py            # model setup and config
+│   ├── modeling/
+│   │   └── faster_rcnn.py            # Model definition and configuration
 │   └── evaluation/
 │       └── faster_rcnn_eval.py       # mAP computation logic
 ```
 
-### 3. Running the Model
+---
+
+### 3. Configuration Setup
+
+Before training or evaluation, configure paths and parameters:
+
+```bash
+cd scripts
+python setup/setup_faster_rcnn_config.py
+```
+
+This script prompts for the master annotation CSV path, output directory, and other settings.
+
+---
+
+### 4. Run the Model
 
 ```bash
 cd scripts
 python faster_rcnn_modeling.py
 ```
 
-### 4. Evaluation
+---
 
-Run this to compute mean Average Precision (mAP):
+### 5. Evaluate the Model
 
 ```bash
 python faster_rcnn_eval.py
 ```
 
-This will compute both class-agnostic and class-specific mAP using predictions in `src/evaluation/faster_rcnn/tmp/raw_predictions.csv`.
+This computes both class-specific and class-agnostic mean Average Precision (mAP) using predictions saved in:
 
-## Notes on Data
+```
+src/evaluation/faster_rcnn/tmp/raw_predictions.csv
+```
 
-* Input images are extracted from NDPI tiles at a single focal plane (middle of 25).
-* Ground truth annotations come from curated Smithsonian fossil pollen datasets.
-* The model downsamples all inputs to 1333×1333 pixels automatically (PyTorch default behavior).
+---
 
 ## Outputs
 
-* Predictions saved as CSVs with bounding boxes, confidence scores, and predicted classes.
-* Evaluation reports include class-wise and mean mAP scores.
+* **Prediction NDPAs**: Bounding boxes, confidence scores, and class labels per tile
+* **Evaluation Report**: mAP metrics per class and overall
 
-## Limitations
-
-* No hyperparameter tuning was performed beyond epoch count.
-* Class imbalance in training data remains an issue and may affect precision for underrepresented classes.
-* Data augmentation (e.g., flips, jittering) was used for DETR but not for Faster R-CNN.
+---
