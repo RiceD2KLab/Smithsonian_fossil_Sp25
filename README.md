@@ -148,10 +148,13 @@ The script will output in the console the following information and visualizatio
 
 
 ## Modeling:
-This project compares the performance of 3 models for the palynomorph detection task. To learn more about each model, click on each of the links below to navigate to their respective ReadMe files nested within the src/modeling subdirectories. 
+This project compares the performance of 3 models for the palynomorph detection task. To learn more about each model and how to run them, click on each of the links below to navigate to their respective ReadMe files nested within the src/modeling subdirectories. 
 - DEtection TRansformer (DETR)
 - Faster R-CNN
 - [Pretrained U-Net Segmentation model](https://github.com/RiceD2KLab/Smithsonian_fossil_Sp25/tree/main/src/modeling/baseline), provided by [Punyasena Paleoecology and Palynology Lab](https://github.com/paleopollen)
+
+## Evaluation:
+To evaluate the performance of each of our models against ground truth annotations, we use Mean Average Prediction. Each model has its own methods of performing evaluation, so please see above links to learn more about how to conduct such evaluation.  
 
 ## Acknowledgments/Citations
 
