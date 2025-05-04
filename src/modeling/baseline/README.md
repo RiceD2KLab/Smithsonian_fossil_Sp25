@@ -22,7 +22,8 @@ python baseline_modeling.py
 ```
 This script will first prompt the user to input some configurations:
 - directory location for the baseline outputs: The baseline model will generate a directory called "baseline_outputs". User will input text representing the absolute path to the directory where the model can store this "baseline_outputs" folder
-- prediction confidence threshold: This represents the confidence threshold at which to include predictions in the outputs and evaluation. User will input a decimal value between 0.0 and 1.0 
+- prediction confidence threshold: This represents the confidence threshold at which to include predictions in the outputs and evaluation. User will input a decimal value between 0.0 and 1.0
+- pretrained model weights: User will input text representing the absolute path to the pretrained model weights
 
 After the model is finished running, the "baseline_outputs" folder will have the following structure:
 ```
