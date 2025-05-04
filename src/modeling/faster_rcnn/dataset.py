@@ -8,6 +8,14 @@ from PIL import Image
 
 class TileDataset(Dataset):
     def __init__(self, image_root, annotation_file, transform=None):
+        """_summary_
+
+        Args:
+            image_root (_type_): _description_
+            annotation_file (_type_): _description_
+            transform (_type_, optional): _description_. Defaults to None.
+        """
+
         self.image_root = image_root
         self.transform = transform
         self.annotations = pd.read_csv(annotation_file)
@@ -21,9 +29,23 @@ class TileDataset(Dataset):
         self.class_mapping = {paly_type: i + 1 for i, paly_type in enumerate(unique_classes)}
 
     def __len__(self):
+        """_summary_
+
+        Returns:
+            _type_: _description_
+        """
         return len(self.image_names)
 
     def get_index_by_tile(self, filename, tile_id):
+        """_summary_
+
+        Args:
+            filename (_type_): _description_
+            tile_id (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         filename = str(filename).strip()
         tile_id = str(tile_id).strip()
         try:
@@ -32,6 +54,15 @@ class TileDataset(Dataset):
             return None
 
     def parse_bboxes(self, image_name, idx):
+        """_summary_
+
+        Args:
+            image_name (_type_): _description_
+            idx (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         filtered_data = self.annotations[self.annotations["tile_id"] == image_name]
         boxes, labels = [], []
 
@@ -62,6 +93,14 @@ class TileDataset(Dataset):
         }
 
     def __getitem__(self, idx):
+        """_summary_
+
+        Args:
+            idx (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         image_tile = f"{self.image_names[idx]}/12z.png"
         row = self.annotations[self.annotations["tile_id"] == self.image_names[idx]].iloc[0]
         image_path = os.path.join(self.image_root, row["filename"], image_tile)
@@ -74,6 +113,14 @@ class TileDataset(Dataset):
         return image, target
 
     def get_tile_metadata(self, idx):
+        """_summary_
+
+        Args:
+            idx (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         tile_id = self.image_names[idx]
         row = self.annotations[self.annotations["tile_id"] == tile_id].iloc[0]
         return row["filename"], tile_id

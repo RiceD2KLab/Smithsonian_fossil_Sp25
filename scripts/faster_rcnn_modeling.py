@@ -95,7 +95,7 @@ def main():
         if all_predictions:
             print(f"{raw_predictions} \n")
 
-            output_csv_path = f"/projects/dsci435/smithsonian_sp25/Smithsonian_fossil_Sp25/src/evaluation/faster_rcnn/tmp/{ndpi_filename}__raw_predictions.csv"
+            output_csv_path = f"/projects/dsci435/smithsonian_sp25/Smithsonian_fossil_Sp25/src/evaluation/faster_rcnn/tmp/raw_predictions.csv"
             write_predictions_to_csv(
                 predictions=raw_predictions,
                 output_csv_path=output_csv_path,
