@@ -1,9 +1,9 @@
 # Baseline: Segmentation model
-This is a pretrained segmentation model from _______. It takes, as input, multi-focal tile crops of an ndpi image and outputs bounding boxes of pollen detections within each tile, irrespective of the focal plane. It is important to note that this model is trained particularly on fossil pollen images to detect fossil pollen, whereas the image data and ground truth annotations provided by the Smithsonian include fossil palynomorphs, which fossil pollen are a sub category of. 
+This is a pretrained segmentation model from the [Punyasena Paleoecology and Palynology Lab](https://github.com/paleopollen) (github repo for model [here](https://github.com/paleopollen/pollen-detection-cli)). The model takes, as input, multi-focal tile crops of an ndpi image and outputs bounding boxes of pollen detections within each tile, irrespective of the focal plane. It is important to note that this model is trained particularly on fossil pollen images to detect fossil pollen, whereas the image data and ground truth annotations provided by the Smithsonian include fossil palynomorphs, which fossil pollen are a sub category of. 
 
 ## Setup Virtual Environment
 Recommended Python version: 3.9
-If not already done so, deactivate any current conda or python virtual environments. (conda: `conda deactivate` Python virtual environment: `deactivate`)
+If not already done so, deactivate any current conda or python virtual environments. (conda: `conda deactivate` or Python virtual environment: `deactivate`)
 Next, run the following commands:
 ```
 cd src/modeling/baseline/pollen-detection-cli
