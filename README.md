@@ -59,7 +59,7 @@ This repository hosts the code for an automated machine-learning model designed 
 3. Install Conda (if using virtual environments)
 4. Set up a virtual environment:
    ```sh
-   conda create --name myenv python=3.9
+   conda env create --name myenv python=3.9
    conda activate myenv
    ```
 5. Install dependencies from `requirements.txt`:
@@ -148,11 +148,17 @@ The script will output in the console the following information and visualizatio
 
 
 ## Modeling:
-Work in progress...
+This project compares the performance of 3 models for the palynomorph detection task. To learn more about each model and how to run them, click on each of the links below to navigate to their respective ReadMe files nested within the src/modeling subdirectories. 
+- DEtection TRansformer (DETR)
+- Faster R-CNN
+- [Pretrained U-Net Segmentation model](https://github.com/RiceD2KLab/Smithsonian_fossil_Sp25/tree/main/src/modeling/baseline), provided by [Punyasena Paleoecology and Palynology Lab](https://github.com/paleopollen)
+
+## Evaluation:
+To evaluate the performance of each of our models against ground truth annotations, we use Mean Average Prediction. Each model has its own methods of performing evaluation, so please see above links to learn more about how to conduct such evaluation.  
 
 ## Acknowledgments/Citations
 
-This project uses the [ndpi-tile-cropper-cli](https://github.com/paleopollen/ndpi-tile-cropper-cli) repository, which provides a command-line interface for cropping NDPI tiles. Special thanks to **Punyasena, S. W.**, & **Satheesan, S. P.** for their work.
+This project uses the [ndpi-tile-cropper-cli](https://github.com/paleopollen/ndpi-tile-cropper-cli) repository, which provides a command-line interface for cropping NDPI tiles, and the [pollen-detection-cli](https://github.com/paleopollen/pollen-detection-cli) repository, which provides a segmentation model to detect pollens from cropped NDPI tiles. Special thanks to **Punyasena, S. W.**, & **Satheesan, S. P.** and the [Punyasena Paleoecology and Palynology Lab](https://github.com/paleopollen) for their work in these projects.
 
 .
 

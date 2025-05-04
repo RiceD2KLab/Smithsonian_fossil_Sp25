@@ -1,39 +1,55 @@
 import json
 import os
+import re
 import shutil
+import xml.etree.ElementTree as ET
+import xml.dom.minidom as minidom
 from PIL import Image
 from torchvision import transforms
 import subprocess
 
 from src.modeling.baseline import baseline_config
+from src import config
 from src.tools.coordinate_space_convertor import pixelwise_to_nanozoomer
 from src.evaluation.baseline.baseline_eval import extract_all_prediction_bboxes 
 
 """
 This function prompts the user to define a couple different file system paths for:
-    - baseline model outputs
+    - baseline outputs
     - re_formatted tile inputs (9 focal plane subset of original 25 tiles, and tiles resized to 1024)
-    - ndpa output directory
 
 Inputs: 
     - None
 
 Returns: 
     - none
+    - creates baseline_outputs directory and subdirectories within it
     - populates /.../modling/baseline/baseline_config.json
 """
 def baseline_config_setup():
-    # Define the path to config.json relative to this script
-    print("Welcome to the setup script! Please provide the following configurations:\n")
+
+    print("Welcome to the baseline model setup script! Please provide the following configurations:\n")
     
-    # prompt user for inputs while creating config dictionary
+    # prompt user for inputs 
+    abs_path_to_baseline_outputs_dir = input("Enter the absolute path to the directory that will hold the baseline model outputs: ")
+    confidence_threshold_for_predictions = float(input("Enter a confidence threshold (decimal ex: 0.004) for making predictions: "))
+    abs_path_to_model_weights = input("Enter the absolute path to the pretrained model weights")
+    
+    # create dirs and subdirs
+    abs_path_to_baseline_outputs = os.path.join(abs_path_to_baseline_outputs_dir, "baseline_outputs")
+    os.makedirs(abs_path_to_baseline_outputs, exist_ok=True)
+    os.makedirs(os.path.join(abs_path_to_baseline_outputs, "prediction_ndpas"))
+    os.makedirs(os.path.join(abs_path_to_baseline_outputs, "reformatted_tiles"))
+
+
     baseline_config = {
-        "abs_path_to_reformatted_tiles_directory": input("Enter the absolute path to a directory to store reformatted tiles for baseline model: "),
-        "abs_path_to_ndpa_output_directory": input("Enter the absolute path to the directory for where to store output NDPA file of the baseline model: "),
-        "confidence_threshold_for_predictions": input("Enter a confidence threshold (decimal ex: 0.004) for making predictions: "),
-        "abs_path_to_baseline_model_outputs": input("Enter the absolute path to the location for where to store the baseline model outputs: "),
-        "abs_path_to_baseline_eval_results_dir": input("Enter the absolute path to the directory for where to store the evaluation metric results of the baseline model: "),
-        "abs_path_to_ndpis_dir": input("Enter absolute path to directory of all ndpi images: ")
+        "abs_path_to_baseline_outputs_dir": abs_path_to_baseline_outputs_dir,
+        "abs_path_to_reformatted_tiles_directory": os.path.join(abs_path_to_baseline_outputs, "reformatted_tiles"),
+        "abs_path_to_ndpa_output_directory": os.path.join(abs_path_to_baseline_outputs, "prediction_ndpas"),
+        "confidence_threshold_for_predictions": confidence_threshold_for_predictions,
+        "abs_path_to_baseline_model_outputs": os.path.join(abs_path_to_baseline_outputs, "model_outputs"),
+        "abs_path_to_baseline_eval_results_dir": abs_path_to_baseline_outputs,
+        "abs_path_to_model_weights": abs_path_to_model_weights
     }
     with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "baseline_config.json"), 'w') as f:
         json.dump(baseline_config, f, indent=4)
@@ -117,6 +133,38 @@ def baseline_input_preparation(abs_path_to_original_tiles_dir, abs_path_to_refor
     return
 
 """
+this function renames the directory that stores the baseline outputs
+
+Input:
+    - abs_path_to_baseline_model_outputs: String represenging the absolute path to the outputs of the baseline model
+
+Returns:
+    - None
+    - renames the baseline model outputs directory to only what the use intends
+        ex: usually, the baseline model outs a new directory called "baseline_outputs_2025-05-02_10-58-57", 
+        where baseline_outputs is all the user specifies. But this function will rename is such that the 
+        date and time portion of the directory name is removed. So, the renamed directory is only "baseline_outputs".
+
+"""
+def rename_baseline_outputs_dir(abs_path_to_baseline_model_outputs):
+    # base_dir is the directory that holds the baseline model outputs directory
+    # directory_name is the name of the baseline outputs directory
+    base_dir, directory_name = os.path.split(abs_path_to_baseline_model_outputs)
+    for name in os.listdir(base_dir):
+        full_path = os.path.join(base_dir, name)
+
+        # Match a directory named baseline_outputs_<timestamp>
+        if os.path.isdir(full_path) and name.startswith("model_outputs_"):
+            # New name with timestamp removed
+            new_path = os.path.join(base_dir, directory_name)
+
+            # Rename the directory
+            os.rename(full_path, new_path)
+            return  # Stop after first match if only one such folder exists
+
+
+
+"""
 this function runs baseline model on an input directory of tiles. It outputs the predictions to a specified output
 
 Intputs:
@@ -130,12 +178,11 @@ Returns:
 """
 def baseline_run(abs_path_to_reformatted_tile_dir, abs_path_to_detections_dir):
     path_to_baseline_model_script = os.path.join(os.path.dirname(__file__), "pollen-detection-cli", "src", "pollen_detection_cli.py")
-    path_to_baseline_model_weights = os.path.join(os.path.dirname(__file__), "bestValModel_encoder.paramOnly")
 
     command = [
         "python",
         path_to_baseline_model_script,
-        "-m", path_to_baseline_model_weights,
+        "-m", baseline_config["abs_path_to_model_weights"],
         "-c", abs_path_to_reformatted_tile_dir,
         "-d", abs_path_to_detections_dir
     ]
@@ -148,6 +195,9 @@ def baseline_run(abs_path_to_reformatted_tile_dir, abs_path_to_detections_dir):
         print(f"Error: Command '{e.cmd}' failed with return code {e.returncode}\n{e.stderr}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+
+    # rename the output directory to only what the user specifies! See more info in the rename_baseline_outputs_dir docstring
+    rename_baseline_outputs_dir(abs_path_to_detections_dir)
     return
 
 """
@@ -167,7 +217,7 @@ def create_ndpviewstate(id, confidence_score, bbox, ndpi_sample_name):
     ndpviewstate.set("id", str(id))
     ET.SubElement(ndpviewstate, "title")
     
-    ET.SubElement(ndpviewstate, "details").text = str(confidence_score)
+    ET.SubElement(ndpviewstate, "details").text = f"confidence score: {str(confidence_score)}"
     
     ET.SubElement(ndpviewstate, "coordformat").text = "nanometers"
 
@@ -198,7 +248,7 @@ def create_ndpviewstate(id, confidence_score, bbox, ndpi_sample_name):
 
     # convert bounding box coordinates to nanozoomer format
     for i in range(4):
-        points[i] = pixelwise_to_nanozoomer(points[i][0], points[i][1], os.path.join(baseline_config["abs_path_to_ndpis_dir"], f"{ndpi_sample_name}.ndpi"))
+        points[i] = pixelwise_to_nanozoomer(points[i][0], points[i][1], os.path.join(config["abs_path_to_ndpi_dir"], f"{ndpi_sample_name}.ndpi"))
     
     # add each point to the ndpviewstate tree
     for x_val, y_val in points:
@@ -225,7 +275,7 @@ Returns:
         where n is the number of NDPI files originally making predictions for 
 """
 def save_ndpas(abs_path_to_detections_dir, abs_path_to_ndpa_output_directory, prediction_confidence_threshold, abs_path_to_ndpi_dir):
-    pred_boxes, pred_scores, pred_labels = extract_all_prediction_bboxes(abs_path_to_detections_dir)
+    pred_boxes, pred_scores, pred_labels = extract_all_prediction_bboxes(abs_path_to_detections_dir, prediction_confidence_threshold)
     
     for ndpi_sample_name in pred_boxes.keys():
         # create a new root
@@ -241,6 +291,9 @@ def save_ndpas(abs_path_to_detections_dir, abs_path_to_ndpa_output_directory, pr
             id += 1
         
         # save the whole tree to a location
-        tree = ET.ElementTree(root)
-        tree.write(os.path.join(abs_path_to_ndpa_output_directory, f"{ndpi_sample_name}.ndpi_predictions.ndpa"), encoding="utf-8", xml_declaration=True)
+        xml_str = ET.tostring(root, encoding="utf-8")
+        pretty_xml = minidom.parseString(xml_str).toprettyxml(indent="  ")
+
+        with open(os.path.join(abs_path_to_ndpa_output_directory, f"{ndpi_sample_name}.ndpi_predictions.ndpa"), "w", encoding="utf-8") as f:
+            f.write(pretty_xml)
     return 
