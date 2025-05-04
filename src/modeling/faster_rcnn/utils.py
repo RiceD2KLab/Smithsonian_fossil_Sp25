@@ -52,6 +52,3 @@ def draw_image(
         plt.show()
 
     plt.close()
-
-def collate_fn(batch):
-    return tuple(zip(*batch))
