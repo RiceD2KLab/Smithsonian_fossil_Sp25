@@ -40,7 +40,7 @@ def annotated_region_cropper():
         tl_px = nanozoomer_to_pixelwise(tl_x_nm, tl_y_nm, os.path.join(config["abs_path_to_ndpi_dir"], ndpi_file))
         br_px = nanozoomer_to_pixelwise(br_x_nm, br_y_nm, os.path.join(config["abs_path_to_ndpi_dir"], ndpi_file))
 
-        path_to_cropper_tool = os.path.join(os.path.dirname(__file__), 'ndpi-tile-cropper-cli/src/ndpi_tile_cropper_cli.py')
+        path_to_cropper_tool = os.path.join(os.path.dirname(__file__), 'ndpi-tile-cropper-cli', 'src', 'ndpi_tile_cropper_cli.py')
 
         # construct command to run cropper tool
         command = [

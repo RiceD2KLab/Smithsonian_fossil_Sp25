@@ -1,0 +1,9 @@
+{
+    "abs_path_to_baseline_outputs_dir": "",
+    "abs_path_to_reformatted_tiles_directory": "",
+    "abs_path_to_ndpa_output_directory": "",
+    "confidence_threshold_for_predictions": 0.0,
+    "abs_path_to_baseline_model_outputs": "",
+    "abs_path_to_baseline_eval_results_dir": "",
+    "abs_path_to_model_weights": ""
+}
