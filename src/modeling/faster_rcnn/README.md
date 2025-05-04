@@ -1,7 +1,3 @@
-Got it — I’ve updated your README with the missing step for running the setup script and polished the overall structure for clarity:
-
----
-
 # Faster R-CNN: Object Detection Model for Palynomorphs
 
 This directory contains the implementation of a Faster R-CNN object detection pipeline for localizing and classifying fossil palynomorphs in NDPI microscopy tiles. Unlike the segmentation-based baseline model, Faster R-CNN outputs bounding boxes and class predictions for each detection.
