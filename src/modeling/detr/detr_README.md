@@ -5,6 +5,7 @@ A minimal guide to run the full DETR workflow from preprocessing CSV annotations
 ## 1. Prerequisites
 
 * Python 3.8+
+* pip install -r requirements.txt
 
 ## 2. Preprocessing (CSV → COCO → Train/Val)
 
@@ -32,12 +33,24 @@ python ../fine_tuning/detr_finetune.py
 
 This will:
 
-Load a pretrained facebook/detr-resnet-50 model
-Fine-tune on your custom dataset
-Save model checkpoints and training logs to your specified output directory
-Make sure to configure paths and hyperparameters inside the script or via a config file.
+* Load a pretrained facebook/detr-resnet-50 model
+* Fine-tune on your custom dataset
+* Save model checkpoints and training logs to your specified output directory
+* Make sure to configure paths and hyperparameters inside the script or via a config file.
 
-## 4. Inference & NDPA Export
+## 4. Evaluation
+
+```bash
+python ../../evaluation/detr/evaluate.py 
+```
+
+This reports:
+
+* mAP (mean Average Precision)
+* Per-class AP
+* Precision/recall at different IoU thresholds
+
+## 5. Inference & NDPA Export
 
 Finally, run:
 
@@ -45,4 +58,9 @@ Finally, run:
 python inference.py
 ```
 
-This runs detection, applies per-tile NMS, and writes one `.ndpi.ndpa` file per slide into the NDPA output directory.
+This performs:
+
+* Object detection on each tile image
+* Tile-level non-maximum suppression (NMS)
+* Export of one .ndpa XML file per slide
+* Output files will be written to the NDPA output directory defined in your project configuration
