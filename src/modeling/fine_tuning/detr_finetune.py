@@ -24,7 +24,7 @@ def main(config_path="src/modeling/detr/detr_config.json"):
     # Step 2: Create dataset
     train_dataset = CocoDetectionTransform(
         project_config["abs_path_to_ndpi_tiles_dir"],
-        "tmp/pollen_train.json"
+        f"{config['output_dir']}/pollen_train.json"
     )
 
     model, processor = initialize_model(
@@ -70,7 +70,7 @@ def main(config_path="src/modeling/detr/detr_config.json"):
     )
 
     # Step 6: Save model
-    torch.save(model.state_dict(), "tmp/detr_pollen.pth")
+    torch.save(model.state_dict(), f"{config['output_dir']}/detr_pollen.pth")
 
     print("Pipeline complete.")
 
