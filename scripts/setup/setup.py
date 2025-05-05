@@ -24,9 +24,8 @@ def save_config(config, config_file_path):
     print(f"\n Config saved to: {config_file_path}")
 
 def main():
-    config_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src', 'config.json'))
     config = prompt_user_for_config()
-    save_config(config, config_file_path)
+    save_config(config, CONFIG_PATH)
 
 if __name__ == '__main__':
     main()
