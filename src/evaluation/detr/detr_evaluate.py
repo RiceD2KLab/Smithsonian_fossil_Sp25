@@ -1,13 +1,15 @@
 import torch
+import os
+import sys
 from src.modeling.detr.config_extractor import load_config as detr_load_config
 from src.modeling.detr.detr_utils import (
     initialize_model,
     evaluate_coco
 )
-
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 from src import config as project_config
 
-def main(config_path="../../modeling/detr/detr_config.json"):
+def main(config_path="src/modeling/detr/detr_config.json"):
     # Step 1: Load config
     config = detr_load_config(config_path)
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -16,7 +18,7 @@ def main(config_path="../../modeling/detr/detr_config.json"):
     model, processor = initialize_model(
         model_name=config["model_name"],
         num_labels=config["num_labels"],
-        weights_path=f"../../modeling/detr/{config["weights_path"]}",
+        weights_path=config["weights_path"],
         device=device
     )
 

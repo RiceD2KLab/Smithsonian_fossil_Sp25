@@ -6,8 +6,10 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from collections import defaultdict
 import xml.etree.ElementTree as ET
+from xml.dom import minidom
 import os
-
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 from src.tools.coordinate_space_convertor import pixelwise_to_nanozoomer
 import torch
 from torch.utils.data import DataLoader
@@ -25,14 +27,25 @@ from pycocotools.cocoeval import COCOeval
 logger = logging.getLogger(__name__)
 
 
-def pre_scan_images(image_root: Path) -> Dict[str, Path]:
+# def pre_scan_images(image_root: Path) -> Dict[str, Path]:
+#     """
+#     Scan image_root recursively, mapping relative paths to Paths.
+#     """
+#     files: Dict[str, Path] = {}
+#     for path in image_root.rglob('*'):
+#         if path.is_file():
+#             rel = path.relative_to(image_root).as_posix()
+#             files[rel] = path
+#     return files
+def pre_scan_images(image_root: str) -> Dict[str, Path]:
     """
     Scan image_root recursively, mapping relative paths to Paths.
     """
+    image_root_path = Path(image_root)  
     files: Dict[str, Path] = {}
-    for path in image_root.rglob('*'):
+    for path in image_root_path.rglob('*'):
         if path.is_file():
-            rel = path.relative_to(image_root).as_posix()
+            rel = path.relative_to(image_root_path).as_posix()
             files[rel] = path
     return files
 
@@ -46,6 +59,9 @@ def convert_csv_to_coco(
     """
     Convert annotation CSV into COCO JSON.
     """
+    csv_path = Path(csv_path)
+    image_root = Path(image_root)
+    output_json = Path(output_json)
     available = pre_scan_images(image_root)
     images, annotations = [], []
     categories: Dict[str, int] = {}
@@ -98,13 +114,15 @@ def convert_csv_to_coco(
 
 
 def filter_category(
-    input_json: Path,
-    output_json: Path,
+    input_json: str,
+    output_json: str,
     exclude_label: str
 ) -> None:
     """
     Remove annotations and category named exclude_label.
     """
+    input_json=Path(input_json)
+    output_json=Path(output_json)
     with input_json.open() as f:
         data = json.load(f)
     cat_ids = {c['id'] for c in data['categories'] if c['name'] == exclude_label}
@@ -152,15 +170,18 @@ def collate_fn(
 
 
 def split_by_tile_id(
-    coco_json: Path,
-    train_json: Path,
-    val_json: Path,
+    coco_json: str,
+    train_json: str,
+    val_json: str,
     val_ratio: float = 0.2,
     seed: int = 42
 ) -> None:
     """
     Split by tile_id grouping.
     """
+    coco_json=Path(coco_json)
+    train_json = Path(train_json)
+    val_json=Path(val_json)
     with coco_json.open() as f:
         data = json.load(f)
     groups = defaultdict(list)
@@ -222,7 +243,7 @@ def train_model(
     device: str = 'cpu',
     epochs: int = 20,
     clip_norm: float = 0.1,
-    log_every: int = 10
+    log_every: int = 10,
 ) -> None:
     model.train()
     step = 0
@@ -313,35 +334,126 @@ def get_tile_id(file_path: str) -> str:
     return Path(file_path).parts[1]
 
 
-def create_annotation_element(
-    annot_id: int,
-    label: int,
-    x_nm: int,
-    y_nm: int
-) -> ET.Element:
-    elem=ET.Element('annotation')
-    ET.SubElement(elem,'title').text=str(label)
-    ET.SubElement(elem,'annotation_type').text='1'
-    ET.SubElement(elem,'group').text=str(label)
-    ET.SubElement(elem,'color').text='16711680'
-    coords=ET.SubElement(elem,'coordinates')
-    ET.SubElement(coords,'coordinate',{'order':'0','x':str(x_nm),'y':str(y_nm)})
-    return elem
+# def create_annotation_element(
+#     annot_id: int,
+#     label: int,
+#     x_nm: int,
+#     y_nm: int
+# ) -> ET.Element:
+#     elem=ET.Element('annotation')
+#     ET.SubElement(elem,'title').text=str(label)
+#     ET.SubElement(elem,'annotation_type').text='1'
+#     ET.SubElement(elem,'group').text=str(label)
+#     ET.SubElement(elem,'color').text='16711680'
+#     coords=ET.SubElement(elem,'coordinates')
+#     ET.SubElement(coords,'coordinate',{'order':'0','x':str(x_nm),'y':str(y_nm)})
+#     return elem
 
+
+# def predictions_to_ndpa(preds, ndpi_base_dir, output_dir):
+#     """
+#     Generate one .ndpa annotation file per slide_name from predicted objects.
+
+#     Args:
+#         preds: Output list from apply_tile_level_nms()
+#         ndpi_base_dir: Path containing .ndpi files named like slide_name.ndpi
+#         output_dir: Where .ndpa XML files should be saved
+#         pixelwise_to_nanozoomer: Function to convert pixel coordinates to NanoZoomer coordinates
+#     """
+#     grouped_by_slide = defaultdict(list)
+
+#     # Group by slide_name
+#     for pred in preds:
+#         slide_name = get_slide_name(pred['file_name'])
+#         tile_id = get_tile_id(pred['file_name'])
+#         grouped_by_slide[slide_name].append((tile_id, pred))
+
+#     os.makedirs(output_dir, exist_ok=True)
+
+#     for slide_name, items in grouped_by_slide.items():
+#         ndpi_path = os.path.join(ndpi_base_dir, f"{slide_name}.ndpi")
+#         annotations = ET.Element("annotations")
+#         annot_id = 0
+
+#         for tile_id, pred in items:
+#             x_off, y_off = parse_tile_id(tile_id)
+#             box = pred['boxes']
+#             label = pred['labels']
+
+#             # Center of the box
+#             x_center = int((box[0] + box[2]) / 2 + x_off)
+#             y_center = int((box[1] + box[3]) / 2 + y_off)
+
+#             # Convert to NanoZoomer coordinate system
+#             x_nm, y_nm = pixelwise_to_nanozoomer(x_center, y_center, ndpi_path)
+
+#             # Create annotation element
+#             annot_elem = create_annotation_element(annot_id, label, x_nm, y_nm)
+#             annotations.append(annot_elem)
+#             annot_id += 1
+
+#         # Write .ndpa file
+#         output_path = os.path.join(output_dir, f"{slide_name}.ndpa")
+#         tree = ET.ElementTree(annotations)
+#         tree.write(output_path, encoding='utf-8', xml_declaration=True)
+
+#     print(f"Finished writing NDPA files to: {output_dir}")
+
+def prettify(elem):
+    """Return a pretty-printed XML string for the Element."""
+    rough_string = ET.tostring(elem, 'utf-8')
+    parsed = minidom.parseString(rough_string)
+    return parsed.toprettyxml(indent="  ")
+
+def create_ndpviewstate(pred_id, label, score, rect_points):
+    """
+    Create <ndpviewstate> element for a prediction.
+    
+    Args:
+        pred_id: Integer ID
+        label: Prediction label (you can embed this in <details> or <title>)
+        score: Confidence score
+        rect_points: List of 4 (x, y) tuples for rectangle corners in order
+    """
+    state = ET.Element("ndpviewstate", id=str(pred_id))
+    ET.SubElement(state, "title").text = f"prediction_{pred_id}"
+    ET.SubElement(state, "details").text = f"{label}, score={score:.3f}"
+    ET.SubElement(state, "coordformat").text = "nanometers"
+    ET.SubElement(state, "lens").text = "60.0"
+    ET.SubElement(state, "x").text = "0"
+    ET.SubElement(state, "y").text = "0"
+    ET.SubElement(state, "z").text = "0"
+    ET.SubElement(state, "showtitle").text = "0"
+    ET.SubElement(state, "showhistogram").text = "0"
+    ET.SubElement(state, "showlineprofile").text = "0"
+
+    annotation = ET.SubElement(state, "annotation", {
+        "type": "freehand",
+        "displayname": "AnnotateRectangle",
+        "color": "#000000"
+    })
+    ET.SubElement(annotation, "measuretype").text = "2"
+    ET.SubElement(annotation, "closed").text = "1"
+    pointlist = ET.SubElement(annotation, "pointlist")
+    for x, y in rect_points:
+        pt = ET.SubElement(pointlist, "point")
+        ET.SubElement(pt, "x").text = str(x)
+        ET.SubElement(pt, "y").text = str(y)
+    ET.SubElement(annotation, "specialtype").text = "rectangle"
+
+    return state
 
 def predictions_to_ndpa(preds, ndpi_base_dir, output_dir):
     """
-    Generate one .ndpa annotation file per slide_name from predicted objects.
+    Generate formatted .ndpa annotation files from predictions.
 
     Args:
-        preds: Output list from apply_tile_level_nms()
-        ndpi_base_dir: Path containing .ndpi files named like slide_name.ndpi
-        output_dir: Where .ndpa XML files should be saved
-        pixelwise_to_nanozoomer: Function to convert pixel coordinates to NanoZoomer coordinates
+        preds: List from apply_tile_level_nms()
+        ndpi_base_dir: Where .ndpi files are stored
+        output_dir: Where to save .ndpa files
+        pixelwise_to_nanozoomer: Coordinate conversion function
     """
     grouped_by_slide = defaultdict(list)
-
-    # Group by slide_name
     for pred in preds:
         slide_name = get_slide_name(pred['file_name'])
         tile_id = get_tile_id(pred['file_name'])
@@ -350,33 +462,37 @@ def predictions_to_ndpa(preds, ndpi_base_dir, output_dir):
     os.makedirs(output_dir, exist_ok=True)
 
     for slide_name, items in grouped_by_slide.items():
-        ndpi_path = os.path.join(ndpi_base_dir, f"{slide_name}.ndpi")
-        annotations = ET.Element("annotations")
-        annot_id = 0
+        ndpi_path = os.path.join(ndpi_base_dir, f"{slide_name}.ndpi.ndpa")
+        annotations_root = ET.Element("annotations")
 
-        for tile_id, pred in items:
+        for idx, (tile_id, pred) in enumerate(items, 1):
             x_off, y_off = parse_tile_id(tile_id)
             box = pred['boxes']
             label = pred['labels']
+            score = pred['scores']
 
-            # Center of the box
-            x_center = int((box[0] + box[2]) / 2 + x_off)
-            y_center = int((box[1] + box[3]) / 2 + y_off)
+            # Rectangle corners
+            x_min = int(box[0] + x_off)
+            y_min = int(box[1] + y_off)
+            x_max = int(box[2] + x_off)
+            y_max = int(box[3] + y_off)
 
-            # Convert to NanoZoomer coordinate system
-            x_nm, y_nm = pixelwise_to_nanozoomer(x_center, y_center, ndpi_path)
+            corners = [
+                pixelwise_to_nanozoomer(x_min, y_min, ndpi_path),
+                pixelwise_to_nanozoomer(x_min, y_max, ndpi_path),
+                pixelwise_to_nanozoomer(x_max, y_max, ndpi_path),
+                pixelwise_to_nanozoomer(x_max, y_min, ndpi_path),
+            ]
 
-            # Create annotation element
-            annot_elem = create_annotation_element(annot_id, label, x_nm, y_nm)
-            annotations.append(annot_elem)
-            annot_id += 1
+            ndpviewstate = create_ndpviewstate(idx, label, score, corners)
+            annotations_root.append(ndpviewstate)
 
-        # Write .ndpa file
         output_path = os.path.join(output_dir, f"{slide_name}.ndpa")
-        tree = ET.ElementTree(annotations)
-        tree.write(output_path, encoding='utf-8', xml_declaration=True)
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(prettify(annotations_root))
 
-    print(f"Finished writing NDPA files to: {output_dir}")
+    print(f"Pretty NDPA files saved to {output_dir}")
+
     
 def predict_image(model, processor, image_path: str, device: str, threshold: float = 0.5):
     """
