@@ -5,20 +5,13 @@ A minimal guide to run the full DETR workflow from preprocessing CSV annotations
 ## 1. Prerequisites
 
 * Python 3.8+
-* Install dependencies:
-
-  ```bash
-  pip install torch torchvision transformers pycocotools Pillow
-  ```
 
 ## 2. Preprocessing (CSV → COCO → Train/Val)
 
 In this folder, run:
 
 ```bash
-python coco_preprocessing.py \
-  --project-config ../../config.json \
-  --detr-config detr_config.json
+python coco_preprocessing.py
 ```
 
 This will produce under `output_dir`:
