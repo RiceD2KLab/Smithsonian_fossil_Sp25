@@ -310,24 +310,42 @@ def train_model(
 def evaluate_coco(
     model: torch.nn.Module,
     processor: DetrImageProcessor,
-    image_dir: Path,
-    ann_json: Path,
+    image_dir: str,
+    ann_json: str,
     device: str = 'cpu',
     iou_type: str = 'bbox'
 ) -> COCOeval:
+    image_dir=Path(image_dir)
+    ann_json=Path(ann_json)
     coco_gt = COCO(str(ann_json))
     preds = []
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
     model.eval()
+
     for img_id in coco_gt.getImgIds():
         info = coco_gt.loadImgs(img_id)[0]
         path = image_dir / info['file_name']
         img = Image.open(path).convert('RGB')
-        batch = processor(images=img, return_tensors='pt').to(device)
-        with torch.no_grad(): out = model(**batch)
-        res = processor.post_process_object_detection(out, threshold=0.3, target_sizes=[img.size[::-1]])[0]
-        for score, label, box in zip(res['scores'], res['labels'], res['boxes']):
-            x0,y0,x1,y1=box.tolist()
-            preds.append({'image_id':img_id,'category_id':int(label.item()),'bbox':[x0,y0,x1-x0,y1-y0],'score':float(score)})
+        inputs = processor(images=img, return_tensors="pt")
+        inputs = {k: v.to(device) for k, v in inputs.items()}
+        # run inference
+        with torch.no_grad():
+            outputs = model(**inputs)
+        results = processor.post_process_object_detection(
+            outputs, threshold=0.5, target_sizes=[img.size[::-1]]
+        )[0]
+
+        # collect each box
+        for score, label, box in zip(results["scores"], results["labels"], results["boxes"]):
+            x0, y0, x1, y1 = box.tolist()
+            w, h = x1 - x0, y1 - y0
+            preds.append({
+                "image_id":    img_id,
+                "category_id": int(label.item()),
+                "bbox":        [x0, y0, w, h],
+                "score":       float(score)
+            })
     coco_dt = coco_gt.loadRes(preds)
     coco_eval = COCOeval(coco_gt,coco_dt, iouType=iou_type)
     coco_eval.evaluate(); coco_eval.accumulate(); coco_eval.summarize()

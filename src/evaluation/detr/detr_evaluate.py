@@ -1,12 +1,13 @@
 import torch
 import os
 import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+
 from src.modeling.detr.config_extractor import load_config as detr_load_config
 from src.modeling.detr.detr_utils import (
     initialize_model,
     evaluate_coco
 )
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 from src import config as project_config
 
 def main(config_path="src/modeling/detr/detr_config.json"):
@@ -27,7 +28,7 @@ def main(config_path="src/modeling/detr/detr_config.json"):
         model=model,
         processor=processor,
         image_dir=project_config["abs_path_to_ndpi_tiles_dir"],
-        ann_json="../../modeling/detr/tmp/pollen_val.json"
+        ann_json="tmp/pollen_val.json"
     )
 
     print("Pipeline complete.")
