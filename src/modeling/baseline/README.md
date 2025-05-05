@@ -75,3 +75,21 @@ model_outputs/
 ...
 ```
 What the above structure means is that for the Colorado file, there were 2 detections in the 51767x_36884y tile, and only 1 detection in the 55931x_38272y tile. For the Tennessee file, there was 1 detection for the 58013x_48900 tile, and 1 detection for the 59402x_50288y tile. 
+
+## Run Evaluation of Baseline Model
+To calculate the mean average precision for the baseline model, run the `baseline_eval.py` script located in `Smithsonian_fossil_Sp25/scripts`. See below. __NOTE__ eval must be run AFTER the modeling is finished. 
+```
+cd scripts
+python baseline_eval.py
+```
+
+After the evaluation script is finished running, the mean average precision outputs will be in the "baseline_outputs" folder. See below:
+```
+baseline_outputs/
+**--> baseline_eval_results.txt**
+--> reformatted_tiles/
+--> prediction_ndpas/
+--> model_outputs/
+```
+
+There are many lines that the mean average precision outputs. They are aligned with torch metrics mean average precision library. However, we are more focused on the line that begins with mAP_50, which stands for mean average precision at IoU = 0.5
