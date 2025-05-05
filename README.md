@@ -79,7 +79,7 @@ For example: for D3283-2_2024_02_06_15_37_28_Kentucky,
 To set up the code, please run the following commands. The user will then be prompted to fill out the fields below to configure locations, and other settings:
 - abs_path_to_ndpi_dir : Input the absolute path to the directory that holds all the ndpi images
 - abs_path_to_ndpa_dir : Input the absolute path to the directory that holds all the ndpa annotation files
-- abs_path_to_location_for_master_annotation_csv : Input the absolute path to the directory holding the master_annotation_csv to be created at the annotation preprocessing step.
+- abs_path_to_location_for_master_annotation_csv : Input the absolute path to the directory holding the master_annotation_csv to be created at the annotation preprocessing step. **NOTE: if running on a region with no annotations (in other words, running in a production like context), then user can leave this blank**
 - abs_path_to_ndpi_tiles_dir : Input the absolute path to the directory that holds all tiled ndpi images
 - tile_size : this is the tile size in pixels. Input only a single integer that represents the side length of the tile. Currently, only square tiles are supported.
 - tile_overlap : Input an integer representing the pixel amount of overlap for the tiles
@@ -112,7 +112,7 @@ all tiles directory/ # this is the directory for all tiles specified by the user
 |     |            |------> ...
 |     |------> ...
 ```
-2. **Annotation preprocessing**: Now that all ndpi images have been tiled, the annoation preprocessing can be run. Run the code below to save all annotations of all the ndpa files into one master_annotation_csv file stored at the location specified by the user at setup.
+2. **Annotation preprocessing**: Now that all ndpi images have been tiled, the annoation preprocessing can be run. Run the code below to save all annotations of all the ndpa files into one master_annotation_csv file stored at the location specified by the user at setup. **NOTE: if running on a region with no annotations (in other words, running in a production like context), then user can ignore this step**
 ```
 cd scripts
 python annnotation_preprocessing.py
