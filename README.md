@@ -34,6 +34,7 @@ This repository hosts the code for an automated machine-learning model designed 
 There are two contexts in which this repo can be used. 
 - running the model on an unannotated region. In other words, running these models in a production like context
 - running the models over an annotated region for evaluation of models purposes.
+
 Unless otherwise mentioned, run all steps for both use cases. 
 
 
@@ -77,6 +78,8 @@ Each ndpi img file has a corresponding ndpa annotation file that has information
 For example: for D3283-2_2024_02_06_15_37_28_Kentucky,
 - NDPI: D3283-2_2024_02_06_15_37_28_Kentucky.ndpi,
 - NDPA: D3283-2_2024_02_06_15_37_28_Kentucky.ndpi.ndpa (the '.ndpi.ndpa' is intentional)
+
+In the production use case, the ndpa files will only have a single element in them (a box representing the annotated region). In the evaluation use case, these .ndpa files will be populated with their ndpi's corresponding annotations
 
 ## SetUp
 To set up the code, please run the following commands. The user will then be prompted to fill out the fields below to configure locations, and other settings:
