@@ -26,17 +26,6 @@ from pycocotools.cocoeval import COCOeval
 
 logger = logging.getLogger(__name__)
 
-
-# def pre_scan_images(image_root: Path) -> Dict[str, Path]:
-#     """
-#     Scan image_root recursively, mapping relative paths to Paths.
-#     """
-#     files: Dict[str, Path] = {}
-#     for path in image_root.rglob('*'):
-#         if path.is_file():
-#             rel = path.relative_to(image_root).as_posix()
-#             files[rel] = path
-#     return files
 def pre_scan_images(image_root: str) -> Dict[str, Path]:
     """
     Scan image_root recursively, mapping relative paths to Paths.
@@ -153,21 +142,6 @@ class CocoDetectionTransform(CocoDetection):
             labels.append(ann['category_id'])
         return img, {'boxes': torch.tensor(boxes), 'labels': torch.tensor(labels)}
 
-
-# def collate_fn(
-#     batch: List[Tuple],
-#     processor: DetrImageProcessor
-# ) -> Dict[str, torch.Tensor]:
-#     images, targets = zip(*batch)
-#     ann_list = []
-#     areas      = []
-#     for i, t in enumerate(targets):
-#         seg = []
-#         for box, cid in zip(t['boxes'], t['labels']):
-#             x0, y0, x1, y1 = box.tolist()
-#             seg.append({'bbox': [x0, y0, x1-x0, y1-y0], 'category_id': int(cid), 'iscrowd': 0})
-#         ann_list.append({'image_id': i, 'annotations': seg})
-#     return processor(images=list(images), annotations=ann_list, return_tensors='pt')
 
 def collate_fn(batch, processor):
     images, targets = zip(*batch)
@@ -397,71 +371,6 @@ def get_slide_name(file_path: str) -> str:
 def get_tile_id(file_path: str) -> str:
     return Path(file_path).parts[1]
 
-
-# def create_annotation_element(
-#     annot_id: int,
-#     label: int,
-#     x_nm: int,
-#     y_nm: int
-# ) -> ET.Element:
-#     elem=ET.Element('annotation')
-#     ET.SubElement(elem,'title').text=str(label)
-#     ET.SubElement(elem,'annotation_type').text='1'
-#     ET.SubElement(elem,'group').text=str(label)
-#     ET.SubElement(elem,'color').text='16711680'
-#     coords=ET.SubElement(elem,'coordinates')
-#     ET.SubElement(coords,'coordinate',{'order':'0','x':str(x_nm),'y':str(y_nm)})
-#     return elem
-
-
-# def predictions_to_ndpa(preds, ndpi_base_dir, output_dir):
-#     """
-#     Generate one .ndpa annotation file per slide_name from predicted objects.
-
-#     Args:
-#         preds: Output list from apply_tile_level_nms()
-#         ndpi_base_dir: Path containing .ndpi files named like slide_name.ndpi
-#         output_dir: Where .ndpa XML files should be saved
-#         pixelwise_to_nanozoomer: Function to convert pixel coordinates to NanoZoomer coordinates
-#     """
-#     grouped_by_slide = defaultdict(list)
-
-#     # Group by slide_name
-#     for pred in preds:
-#         slide_name = get_slide_name(pred['file_name'])
-#         tile_id = get_tile_id(pred['file_name'])
-#         grouped_by_slide[slide_name].append((tile_id, pred))
-
-#     os.makedirs(output_dir, exist_ok=True)
-
-#     for slide_name, items in grouped_by_slide.items():
-#         ndpi_path = os.path.join(ndpi_base_dir, f"{slide_name}.ndpi")
-#         annotations = ET.Element("annotations")
-#         annot_id = 0
-
-#         for tile_id, pred in items:
-#             x_off, y_off = parse_tile_id(tile_id)
-#             box = pred['boxes']
-#             label = pred['labels']
-
-#             # Center of the box
-#             x_center = int((box[0] + box[2]) / 2 + x_off)
-#             y_center = int((box[1] + box[3]) / 2 + y_off)
-
-#             # Convert to NanoZoomer coordinate system
-#             x_nm, y_nm = pixelwise_to_nanozoomer(x_center, y_center, ndpi_path)
-
-#             # Create annotation element
-#             annot_elem = create_annotation_element(annot_id, label, x_nm, y_nm)
-#             annotations.append(annot_elem)
-#             annot_id += 1
-
-#         # Write .ndpa file
-#         output_path = os.path.join(output_dir, f"{slide_name}.ndpa")
-#         tree = ET.ElementTree(annotations)
-#         tree.write(output_path, encoding='utf-8', xml_declaration=True)
-
-#     print(f"Finished writing NDPA files to: {output_dir}")
 
 def prettify(elem):
     """Return a pretty-printed XML string for the Element."""
