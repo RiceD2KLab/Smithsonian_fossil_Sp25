@@ -107,7 +107,7 @@ def main():
             output_dir = config["abs_path_to_output_files"]
             os.makedirs(output_dir, exist_ok=True)
             print(f"📂 Saving predictions to: {output_dir}")
-            output_path = os.path.join(output_dir, f"{ndpi_filename}.ndpa")
+            output_path = os.path.join(output_dir, f"{ndpi_filename}.ndpi.ndpa")
             write_predictions_to_ndpa_for_faster_rcnn(all_predictions, output_path, class_mapping=dataset.class_mapping)
         else:
             print(f"⚠️ No predictions found for {ndpi_filename}")
