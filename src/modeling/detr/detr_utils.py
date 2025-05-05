@@ -154,19 +154,59 @@ class CocoDetectionTransform(CocoDetection):
         return img, {'boxes': torch.tensor(boxes), 'labels': torch.tensor(labels)}
 
 
-def collate_fn(
-    batch: List[Tuple],
-    processor: DetrImageProcessor
-) -> Dict[str, torch.Tensor]:
+# def collate_fn(
+#     batch: List[Tuple],
+#     processor: DetrImageProcessor
+# ) -> Dict[str, torch.Tensor]:
+#     images, targets = zip(*batch)
+#     ann_list = []
+#     areas      = []
+#     for i, t in enumerate(targets):
+#         seg = []
+#         for box, cid in zip(t['boxes'], t['labels']):
+#             x0, y0, x1, y1 = box.tolist()
+#             seg.append({'bbox': [x0, y0, x1-x0, y1-y0], 'category_id': int(cid), 'iscrowd': 0})
+#         ann_list.append({'image_id': i, 'annotations': seg})
+#     return processor(images=list(images), annotations=ann_list, return_tensors='pt')
+
+def collate_fn(batch, processor):
     images, targets = zip(*batch)
-    ann_list = []
-    for i, t in enumerate(targets):
-        seg = []
-        for box, cid in zip(t['boxes'], t['labels']):
-            x0, y0, x1, y1 = box.tolist()
-            seg.append({'bbox': [x0, y0, x1-x0, y1-y0], 'category_id': int(cid), 'iscrowd': 0})
-        ann_list.append({'image_id': i, 'annotations': seg})
-    return processor(images=list(images), annotations=ann_list, return_tensors='pt')
+    hf_anns = []
+
+    for i, tgt in enumerate(targets):
+        coco_boxes = []
+        areas      = []
+        anns_list  = []
+
+        for x0, y0, x1, y1 in tgt["boxes"].tolist():
+            w = x1 - x0
+            h = y1 - y0
+            coco_boxes.append([x0, y0, w, h])
+            areas.append(w * h)
+
+        ann_list = []
+        for bbox, cid, area in zip(coco_boxes,
+                                   tgt["labels"].tolist(),
+                                   areas):
+            anns_list.append({
+                "bbox":        bbox,
+                "category_id": int(cid),
+                "area":        float(area),
+                "iscrowd":     0
+            })
+
+        hf_anns.append({
+            "image_id":   i,         # just the batch‐local index
+            "annotations": anns_list
+        })
+
+    # Now call the processor once, with both images and annotations
+    encoding = processor(
+        images=list(images),
+        annotations=hf_anns,
+        return_tensors="pt"
+    )
+    return encoding
 
 
 def split_by_tile_id(
@@ -249,9 +289,15 @@ def train_model(
     step = 0
     for ep in range(epochs):
         for batch in train_loader:
-            batch = {k: v.to(device) for k, v in batch.items()}
-            out = model(**batch)
-            loss = out.loss
+            pixel_values = batch["pixel_values"].to(device)
+            labels = batch["labels"]
+            for lbl in labels:
+                lbl["boxes"]        = lbl["boxes"].to(device)
+                lbl["class_labels"] = lbl["class_labels"].to(device)
+            outputs = model(pixel_values=pixel_values, labels=labels)
+            # batch = {k: v.to(device) for k, v in batch.items()}
+            # out = model(**batch)
+            loss = outputs.loss
             optimizer.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), clip_norm)

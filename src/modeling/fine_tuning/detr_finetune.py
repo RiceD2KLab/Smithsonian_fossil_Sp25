@@ -35,12 +35,14 @@ def main(config_path="src/modeling/detr/detr_config.json"):
     )
     print("Loaded model")
 
+    def my_collate_fn(batch):
+        return collate_fn(batch, processor=processor)
     # Step 3: Create Dataloader
     train_loader = DataLoader(
         train_dataset,
         batch_size=config["batch_size"],
         shuffle=True,
-        collate_fn=collate_fn(processor=processor),
+        collate_fn=my_collate_fn,
         num_workers=4,
         pin_memory=True
     )

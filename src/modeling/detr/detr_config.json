@@ -1,11 +1,11 @@
 {
     "confidence_prediction_threshold": 0.5,
     "nms_iou_threshold": 0.5,
-    "num_labels": 5,
+    "num_labels": 4,
     "model_name": "facebook/detr-resnet-50",
-    "weights_path": "detr_pollen_no_indet.pth",
-    "output_dir": "./tmp/",
-    "num_epochs": 20,
+    "weights_path": "src/modeling/detr/detr_pollen_no_indet.pth",
+    "output_dir": "/scratch/is29/Smithsonian_fossil_Sp25/tmp/",
+    "num_epochs": 2,
     "batch_size": 8,
     "learning_rate": 1e-5,
     "weight_decay": 1e-4,
@@ -13,5 +13,6 @@
     "warmup_fraction": 0.1,
     "max_grad_norm": 0.1,
     "seed": 42,
-    "val_split": 0.2
+    "val_split": 0.2,
+    "focal_length": 25
 }
