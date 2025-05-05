@@ -8,6 +8,7 @@ from collections import defaultdict
 import xml.etree.ElementTree as ET
 import os
 
+from src.tools.coordinate_space_convertor import pixelwise_to_nanozoomer
 import torch
 from torch.utils.data import DataLoader
 from torchvision.datasets import CocoDetection
@@ -328,27 +329,55 @@ def create_annotation_element(
     return elem
 
 
-def predictions_to_ndpa(
-    preds: List[dict],
-    ndpi_base_dir: Path,
-    output_dir: Path
-) -> None:
-    output_dir.mkdir(parents=True,exist_ok=True)
-    grouped=defaultdict(list)
-    for p in preds:
-        grouped[get_slide_name(p['file_name'])].append(p)
-    for slide,items in grouped.items():
-        annotations=ET.Element('annotations')
-        for i,pred in enumerate(items):
-            tile=get_tile_id(pred['file_name'])
-            x_off,y_off=parse_tile_id(tile)
-            x0,y0,w,h=pred['bbox']
-            cx,cy=int(x0+w/2+x_off),int(y0+h/2+y_off)
-            annotations.append(create_annotation_element(i,pred['category_id'],cx,cy))
-        out_path=output_dir/f"{slide}.ndpa"
-        ET.ElementTree(annotations).write(out_path,encoding='utf-8',xml_declaration=True)
-    logger.info(f"Finished writing NDPA files to {output_dir}")
+def predictions_to_ndpa(preds, ndpi_base_dir, output_dir):
+    """
+    Generate one .ndpa annotation file per slide_name from predicted objects.
 
+    Args:
+        preds: Output list from apply_tile_level_nms()
+        ndpi_base_dir: Path containing .ndpi files named like slide_name.ndpi
+        output_dir: Where .ndpa XML files should be saved
+        pixelwise_to_nanozoomer: Function to convert pixel coordinates to NanoZoomer coordinates
+    """
+    grouped_by_slide = defaultdict(list)
+
+    # Group by slide_name
+    for pred in preds:
+        slide_name = get_slide_name(pred['file_name'])
+        tile_id = get_tile_id(pred['file_name'])
+        grouped_by_slide[slide_name].append((tile_id, pred))
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    for slide_name, items in grouped_by_slide.items():
+        ndpi_path = os.path.join(ndpi_base_dir, f"{slide_name}.ndpi")
+        annotations = ET.Element("annotations")
+        annot_id = 0
+
+        for tile_id, pred in items:
+            x_off, y_off = parse_tile_id(tile_id)
+            box = pred['boxes']
+            label = pred['labels']
+
+            # Center of the box
+            x_center = int((box[0] + box[2]) / 2 + x_off)
+            y_center = int((box[1] + box[3]) / 2 + y_off)
+
+            # Convert to NanoZoomer coordinate system
+            x_nm, y_nm = pixelwise_to_nanozoomer(x_center, y_center, ndpi_path)
+
+            # Create annotation element
+            annot_elem = create_annotation_element(annot_id, label, x_nm, y_nm)
+            annotations.append(annot_elem)
+            annot_id += 1
+
+        # Write .ndpa file
+        output_path = os.path.join(output_dir, f"{slide_name}.ndpa")
+        tree = ET.ElementTree(annotations)
+        tree.write(output_path, encoding='utf-8', xml_declaration=True)
+
+    print(f"Finished writing NDPA files to: {output_dir}")
+    
 def predict_image(model, processor, image_path: str, device: str, threshold: float = 0.5):
     """
     Run inference on a single image and return raw boxes, labels, scores.

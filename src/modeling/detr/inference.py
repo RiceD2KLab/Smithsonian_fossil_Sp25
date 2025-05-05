@@ -1,7 +1,7 @@
 import sys
 import os
 
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 import torch
 from config_extractor import load_config as detr_load_config
@@ -14,7 +14,7 @@ from detr_utils import (
 from src import config as project_config
 
 
-def main(config_path="detr_config.json"):
+def main(config_path="src/modeling/detr/detr_config.json"):
     # Step 1: Load config
     config = detr_load_config(config_path)
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -50,7 +50,7 @@ def main(config_path="detr_config.json"):
     predictions_to_ndpa(
         filtered_preds,
         ndpi_base_dir=project_config["abs_path_to_ndpi_dir"],
-        output_dir=config["ndpa_output_dir"],
+        output_dir=config["output_dir"],
     )
 
     print("Pipeline complete.")
