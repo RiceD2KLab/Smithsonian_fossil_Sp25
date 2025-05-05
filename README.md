@@ -59,13 +59,10 @@ This repository hosts the code for an automated machine-learning model designed 
 3. Install Conda (if using virtual environments)
 4. Set up a virtual environment:
    ```sh
-   conda env create --name myenv python=3.9
-   conda activate myenv
+   conda env create -f environment.yml -n palynomorph_detection
+   conda activate palynomorph_detection
    ```
-5. Install dependencies from `requirements.txt`:
-   ```sh
-   pip install -r requirements.txt
-   ```
+
 ## Data
 
 **ndpi images (.ndpi)** : this project expects all ndpi files to be stored in a single directory. Nothing other than the ndpi files should exist in this directory. NOTE: ndpi files are usually very large (20-50GB), so sufficient space for the ndpi img files directory is essential. 
