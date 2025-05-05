@@ -12,6 +12,17 @@ from src.tools.faster_rcnn_predictions_to_ndpa import convert_predictions_to_nan
 from src.modeling.faster_rcnn.dataset import TileDataset
 from src.modeling.faster_rcnn import load_config
 
+def get_all_tile_ids(tile_root_dir):
+    tile_ids = []
+    for folder_name in os.listdir(tile_root_dir):
+        full_folder = os.path.join(tile_root_dir, folder_name)
+        if os.path.isdir(full_folder):
+            for file_name in os.listdir(full_folder):
+                if file_name.endswith(".png"):
+                    tile_id = os.path.splitext(file_name)[0]
+                    tile_ids.append((folder_name, tile_id))  # folder is ndpi_filename
+    return tile_ids
+
 
 def main():
     print("🚀 Initializing Faster R-CNN Inference Pipeline...\n")
@@ -22,30 +33,25 @@ def main():
 
     tiles_dir = config["abs_path_to_ndpi_tiles"]
     ndpi_dir = config["abs_path_to_ndpi_files"]
-    annotation_csv = config["abs_path_to_master_annotation_csv"]
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model_path = config["abs_path_to_model"]
+    class_mapping = {'alg': 1, 'fun': 2, 'pol': 3, 'spo': 4, 'din': 5, 'Bipol': 6, 'paly': 7}
 
     print(f"🧠 Using device: {device.upper()}")
     print(f"📦 Loading model from: {model_path}\n")
 
-    # Load dataset and model
-    dataset = TileDataset(image_root=tiles_dir, annotation_file=annotation_csv)
-    num_classes = len(dataset.class_mapping) #+1 # +1 for background
-    print(f"📚 Detected {num_classes} classes: {dataset.class_mapping}\n")
+    num_classes = 8 # Adjust this based on your dataset
+    print(f"📚 Detected {num_classes} classes: {class_mapping}\n")
 
     model = load_model(model_path, num_classes=num_classes, device=device)
     print("✅ Model loaded successfully.\n")
-
-    # Group tile_ids by NDPI filename
+    
+    tile_index = get_all_tile_ids(tiles_dir)
+    print(f"🔍 Found {len(tile_index)} tile images to process.")
+    
     tile_map = {}
-    for tile_id in dataset.image_names:
-        row = dataset.annotations[dataset.annotations["tile_id"] == tile_id].iloc[0]
-        filename = row["filename"]
-        tile_map.setdefault(filename, []).append(tile_id)
-
-    print(f"🔍 Found {len(tile_map)} NDPI files to process.\n")
-
+    for ndpi_file, tile_id in tile_index:
+        tile_map.setdefault(ndpi_file, []).append(tile_id)
     
     # Process each NDPI group
     for ndpi_filename, tile_ids in tqdm(tile_map.items(), desc="🧪 Processing NDPI files"):
@@ -99,7 +105,7 @@ def main():
             write_predictions_to_csv(
                 predictions=raw_predictions,
                 output_csv_path=output_csv_path,
-                class_mapping=dataset.class_mapping,
+                class_mapping=class_mapping,
                 filename=ndpi_filename
             )
 
@@ -108,7 +114,7 @@ def main():
             os.makedirs(output_dir, exist_ok=True)
             print(f"📂 Saving predictions to: {output_dir}")
             output_path = os.path.join(output_dir, f"{ndpi_filename}.ndpi.ndpa")
-            write_predictions_to_ndpa_for_faster_rcnn(all_predictions, output_path, class_mapping=dataset.class_mapping)
+            write_predictions_to_ndpa_for_faster_rcnn(all_predictions, output_path, class_mapping=class_mapping)
         else:
             print(f"⚠️ No predictions found for {ndpi_filename}")
 
