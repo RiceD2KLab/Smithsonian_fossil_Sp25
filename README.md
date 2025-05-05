@@ -31,6 +31,10 @@
 - **Dr. Ingrid Romero**
 
 This repository hosts the code for an automated machine-learning model designed to detect and classify palynomorphs (fossil pollen, spores, and other organic-walled microorganisms) from high-resolution NDPI (NanoZoomer Digital Pathology Image) files. 
+There are two contexts in which this repo can be used. 
+- running the model on an unannotated region. In other words, running these models in a production like context
+- running the models over an annotated region for evaluation of models purposes.
+Unless otherwise mentioned, run all steps for both use cases. 
 
 
 ## Repo Structure
