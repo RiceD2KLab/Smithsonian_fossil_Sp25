@@ -79,7 +79,7 @@ For example: for D3283-2_2024_02_06_15_37_28_Kentucky,
 - NDPI: D3283-2_2024_02_06_15_37_28_Kentucky.ndpi,
 - NDPA: D3283-2_2024_02_06_15_37_28_Kentucky.ndpi.ndpa (the '.ndpi.ndpa' is intentional)
 
-In the production use case, the ndpa files will only have a single element in them (a box representing the annotated region). In the evaluation use case, these .ndpa files will be populated with their ndpi's corresponding annotations
+**NOTE** In the production use case, the ndpa files will only have a single element in them (a box representing the annotated region). In the evaluation use case, these .ndpa files will be populated with their ndpi's corresponding annotations
 
 ## SetUp
 To set up the code, please run the following commands. The user will then be prompted to fill out the fields below to configure locations, and other settings:
