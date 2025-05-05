@@ -23,7 +23,7 @@ Recommended Python version: 3.9
 conda deactivate  # or 'deactivate' if using virtualenv
 conda create -n faster_rcnn_env python=3.9
 conda activate faster_rcnn_env
-pip install -r requirements.txt  # Includes torch, torchvision, pandas, etc.
+pip install -r /requirements.txt  # Includes torch, torchvision, pandas, etc.
 ```
 
 ---

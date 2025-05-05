@@ -6,7 +6,7 @@ import json
 def setup_faster_rcnn_config():
     print("🛠  Setting up Faster R-CNN config...\n")
     
-    config_path = "/projects/dsci435/smithsonian_sp25/Smithsonian_fossil_Sp25/src/modeling/faster_rcnn/faster_rcnn_config.json"
+    config_path = "../src/modeling/faster_rcnn/faster_rcnn_config.json"
 
     if not os.path.exists(config_path):
         print("⚠️  Config file does not exist. Please make sure the path is correct.")
