@@ -16,22 +16,22 @@ def main(config_path="src/modeling/detr/detr_config.json"):
     convert_csv_to_coco(
         csv_path=project_config["abs_path_to_location_for_master_annotation_csv"],
         image_root=project_config["abs_path_to_ndpi_tiles_dir"],
-        output_json = f"{config['output_dir']}pollen_dataset.json",
+        output_json = f"{config['output_dir']}/pollen_dataset.json",
         focal_length=config['focal_length']
     )
 
     print("Finished converting csv to coco format")
 
     filter_category(
-        input_json=f"{config['output_dir']}pollen_dataset.json",
-        output_json=f"{config['output_dir']}filtered_pollen_dataset.json",
+        input_json=f"{config['output_dir']}/pollen_dataset.json",
+        output_json=f"{config['output_dir']}/filtered_pollen_dataset.json",
         exclude_label="indet"
     )
 
     split_by_tile_id(
-        coco_json=f"{config['output_dir']}filtered_pollen_dataset.json",
-        train_json=f"{config['output_dir']}pollen_train.json",
-        val_json=f"{config['output_dir']}pollen_val.json",
+        coco_json=f"{config['output_dir']}/filtered_pollen_dataset.json",
+        train_json=f"{config['output_dir']}/pollen_train.json",
+        val_json=f"{config['output_dir']}/pollen_val.json",
         val_ratio=config["val_split"],
         seed=config["seed"]
     )
