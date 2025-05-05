@@ -2,10 +2,18 @@
 
 A minimal guide to run the full DETR workflow from preprocessing CSV annotations to exporting NDPA files.
 
-## 0. Prerequisites
+## 0. Setup Virtual Environment
 
-* Python 3.8+
-* pip install -r requirements.txt
+Recommended Python version: 3.9
+If not already done so, deactivate any current conda or python virtual environments. (conda: `conda deactivate` or Python virtual environment: `deactivate`)
+Next, run the following commands:
+```
+cd src/modeling/detr/
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
 ## 1. DETR Configuration
 

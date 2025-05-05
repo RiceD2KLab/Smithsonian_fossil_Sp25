@@ -28,7 +28,7 @@ def main(config_path="src/modeling/detr/detr_config.json"):
         model=model,
         processor=processor,
         image_dir=project_config["abs_path_to_ndpi_tiles_dir"],
-        ann_json="tmp/pollen_val.json"
+        ann_json=f"{config['output_dir']}/pollen_val.json"
     )
 
     print("Pipeline complete.")
