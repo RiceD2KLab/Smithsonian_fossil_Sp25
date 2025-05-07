@@ -20,10 +20,9 @@ We fine-tune a pretrained Faster R-CNN model (originally trained on COCO) to det
 Recommended Python version: 3.9
 
 ```bash
-conda deactivate  # or 'deactivate' if using virtualenv
-cd src/modeling/faster_rcnn/
-conda env create -f environment.yml -n faster_rcnn
-conda activate faster_rcnn
+python3.10 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ---
