@@ -11,7 +11,7 @@ python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
-pip install openslide-python, pycocotools, torchmetrics
+pip install openslide-python openslide-bin pycocotools torchmetrics
 ```
 
 ## Manual Tweak to Code (IMPORTANT!)

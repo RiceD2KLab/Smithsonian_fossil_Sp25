@@ -10,8 +10,8 @@ from src.modeling.baseline import baseline_config
 
 if __name__ == "__main__":
     # Run setup configuration
-    # baseline_config_setup()
-    # print("FINISHED configuring settings for baseline model")
+    baseline_config_setup()
+    print("FINISHED configuring settings for baseline model")
 
     # Run baseline input preparation
     print("STARTING baseline model input preparation")
