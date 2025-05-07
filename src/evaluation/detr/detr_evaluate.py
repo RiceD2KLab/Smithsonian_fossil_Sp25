@@ -20,7 +20,8 @@ def main(config_path="src/modeling/detr/detr_config.json"):
         model_name=config["model_name"],
         num_labels=config["num_labels"],
         weights_path=config["weights_path"],
-        device=device
+        device=device,
+        coco_json_path=f"{config['output_dir']}/pollen_dataset.json"
     )
 
     # Step 3: Evaluate

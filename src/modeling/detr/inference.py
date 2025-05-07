@@ -24,7 +24,8 @@ def main(config_path="src/modeling/detr/detr_config.json"):
         config["model_name"],
         config["num_labels"],
         config["weights_path"],
-        device
+        device,
+        coco_json_path=f"{config['output_dir']}/pollen_dataset.json"
     )
 
     print("Model initialized")
@@ -51,6 +52,7 @@ def main(config_path="src/modeling/detr/detr_config.json"):
         filtered_preds,
         ndpi_base_dir=project_config["abs_path_to_ndpi_dir"],
         output_dir=config["output_dir"],
+        id2label=model.config.id2label
     )
 
     print("Pipeline complete.")
