@@ -21,6 +21,7 @@ Recommended Python version: 3.9
 
 ```bash
 conda deactivate  # or 'deactivate' if using virtualenv
+cd src/modeling/faster_rcnn/
 conda env create -f environment.yml -n faster_rcnn
 conda activate faster_rcnn
 ```
