@@ -9,7 +9,7 @@ from .utils import draw_image
 # Global transform
 transform = transforms.Compose([transforms.ToTensor()])
 
-def run_on_tile_multi_focus(model, filename, tile_id, device, confidence_threshold=0.8, iou_threshold=0.5, nms_iou_threshold=0.5, draw=True):
+def run_on_tile_multi_focus(model, filename, tile_id, device, confidence_threshold=0.000000001, iou_threshold=0.5, nms_iou_threshold=0.5, draw=True):
     model.eval()
 
     all_preds_boxes, all_preds_scores, all_preds_labels = [], [], []

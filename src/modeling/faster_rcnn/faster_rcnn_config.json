@@ -2,6 +2,6 @@
     "abs_path_to_ndpi_tiles": "/scratch/aoo4/kentucky",
     "abs_path_to_master_annotation_csv": "/scratch/aoo4/kentucky/master_annotation.csv",
     "abs_path_to_model": "/scratch/aoo4/model_frcnn_ep20.pth",
-    "abs_path_to_ndpi_files": "/scratch/aoo4/kentucky",
+    "abs_path_to_ndpi_file": "/scratch/aoo4/kentucky/D3283-2_2024_02_06_15_37_28_Kentucky.ndpi",
     "abs_path_to_output_files": "/scratch/aoo4/kentucky"
 }
