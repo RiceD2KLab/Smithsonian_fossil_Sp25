@@ -16,13 +16,13 @@ def setup_faster_rcnn_config():
         config = json.load(f)
 
     ndpi_tiles_path = input("📂 Enter the absolute path to your NDPI tiles: ").strip()
-    annotation_csv_path = input("📄 Enter the absolute path to the master annotation CSV: ").strip()
+    #annotation_csv_path = input("📄 Enter the absolute path to the master annotation CSV: ").strip()
     ndpi_file = input("📂 Enter the absolute path to your NDPI file: ").strip()
     model_path = input("🧠 Enter the absolute path to the trained model (.pth): ").strip()
     output_dir = input("📂 Enter the absolute path to save the output files: ").strip()
     
     config["abs_path_to_ndpi_tiles"] = ndpi_tiles_path
-    config["abs_path_to_master_annotation_csv"] = annotation_csv_path
+    #config["abs_path_to_master_annotation_csv"] = annotation_csv_path
     config["abs_path_to_ndpi_file"] = ndpi_file
     config["abs_path_to_model"] = model_path
     config["abs_path_to_output_files"] = output_dir
