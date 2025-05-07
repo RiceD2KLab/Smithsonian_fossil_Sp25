@@ -21,10 +21,8 @@ Recommended Python version: 3.9
 
 ```bash
 conda deactivate  # or 'deactivate' if using virtualenv
-conda create -n faster_rcnn_env python=3.9
-conda activate faster_rcnn_env
-cd src/modeling/faster_rcnn/
-pip install -r requirements.txt  # Includes torch, torchvision, pandas, etc.
+conda env create -f environment.yml -n faster_rcnn
+conda activate faster_rcnn
 ```
 
 ---
