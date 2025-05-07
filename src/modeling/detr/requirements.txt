@@ -13,3 +13,4 @@ timm>=0.4.12
 scipy
 openslide-python
 openslide-bin
+numpy==1.26.3

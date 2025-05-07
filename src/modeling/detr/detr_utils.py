@@ -223,7 +223,8 @@ def initialize_model(
     model_name: str,
     num_labels: int,
     weights_path: Optional[Path],
-    device: str = 'cpu'
+    device: str = 'cpu',
+    coco_json_path = None
 ) -> Tuple[torch.nn.Module, DetrImageProcessor]:
     processor = DetrImageProcessor.from_pretrained(model_name)
     model = DetrForObjectDetection.from_pretrained(model_name, num_labels=num_labels, ignore_mismatched_sizes=True)
@@ -231,6 +232,24 @@ def initialize_model(
         st = torch.load(weights_path, map_location='cpu')
         model.load_state_dict(st)
     model.to(device)
+
+    
+    try:
+        with open(coco_json_path, "r") as f:
+            data = json.load(f)
+        id2label = {cat["id"]: cat["name"] for cat in data["categories"]}
+        label2id = {v: k for k, v in id2label.items()}
+
+        model.config.id2label = id2label
+        model.config.label2id = label2id
+    except:
+        print("No existing coco json file, must be using default model")
+        id2label = {0: 'pol', 1: 'fun', 2: 'spo', 4: 'alg'}
+        label2id = {'pol': 0, 'fun': 1, 'spo': 2, 'alg': 4}
+        model.config.id2label = id2label
+        model.config.label2id = label2id
+    
+
     return model.eval(), processor
 
 
@@ -416,7 +435,7 @@ def create_ndpviewstate(pred_id, label, score, rect_points):
 
     return state
 
-def predictions_to_ndpa(preds, ndpi_base_dir, output_dir):
+def predictions_to_ndpa(preds, ndpi_base_dir, output_dir, id2label):
     """
     Generate formatted .ndpa annotation files from predictions.
 
@@ -435,13 +454,14 @@ def predictions_to_ndpa(preds, ndpi_base_dir, output_dir):
     os.makedirs(output_dir, exist_ok=True)
 
     for slide_name, items in grouped_by_slide.items():
-        ndpi_path = os.path.join(ndpi_base_dir, f"{slide_name}.ndpi.ndpa")
+        ndpi_path = os.path.join(ndpi_base_dir, f"{slide_name}.ndpi")
         annotations_root = ET.Element("annotations")
 
         for idx, (tile_id, pred) in enumerate(items, 1):
             x_off, y_off = parse_tile_id(tile_id)
             box = pred['boxes']
             label = pred['labels']
+            label = id2label[label]
             score = pred['scores']
 
             # Rectangle corners
@@ -460,7 +480,7 @@ def predictions_to_ndpa(preds, ndpi_base_dir, output_dir):
             ndpviewstate = create_ndpviewstate(idx, label, score, corners)
             annotations_root.append(ndpviewstate)
 
-        output_path = os.path.join(output_dir, f"{slide_name}.ndpa")
+        output_path = os.path.join(output_dir, f"{slide_name}.ndpi.ndpa")
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(prettify(annotations_root))
 

@@ -9,7 +9,6 @@ from src.modeling.detr.config_extractor import load_config as detr_load_config
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 from src import config as project_config
 
-
 def main(config_path="src/modeling/detr/detr_config.json"):
     config = detr_load_config(config_path)
 
