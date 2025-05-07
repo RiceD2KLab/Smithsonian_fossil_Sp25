@@ -5,4 +5,4 @@ __pycache__/
 src/config.json
 src/modeling/baseline/baseline_config.json
 src/modeling/faster_rcnn/faster_rcnn_config.json
-/src/evaluation/faster_rcnn/tmp/
+/src/evaluation/faster_rcnn/tmp/*

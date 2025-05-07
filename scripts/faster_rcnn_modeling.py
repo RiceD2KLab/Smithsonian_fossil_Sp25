@@ -97,7 +97,8 @@ def main():
                 all_predictions.extend(converted)
 
         if all_predictions:
-            output_csv_path = f"../../src/evaluation/faster_rcnn/tmp/raw_predictions.csv"
+            output_csv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src', 'evaluation', 'faster_rcnn','tmp', 'raw_predictions.csv'))
+            # output_csv_path = f"../../src/evaluation/faster_rcnn/tmp/raw_predictions.csv"
             write_predictions_to_csv(
                 predictions=raw_predictions,
                 output_csv_path=output_csv_path,
@@ -109,7 +110,7 @@ def main():
             output_dir = config["abs_path_to_output_files"]
             os.makedirs(output_dir, exist_ok=True)
             print(f"📂 Saving predictions to: {output_dir}")
-            output_path = os.path.join(output_dir, f"{ndpi_filename}.ndpa")
+            output_path = os.path.join(output_dir, f"{ndpi_filename}.ndpi.ndpa")
             write_predictions_to_ndpa_for_faster_rcnn(all_predictions, output_path, class_mapping=class_mapping)
         else:
             print(f"⚠️ No predictions found for {ndpi_filename}")
