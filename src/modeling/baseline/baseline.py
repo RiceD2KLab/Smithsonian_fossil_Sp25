@@ -33,13 +33,13 @@ def baseline_config_setup():
     # prompt user for inputs 
     abs_path_to_baseline_outputs_dir = input("Enter the absolute path to the directory that will hold the baseline model outputs: ")
     confidence_threshold_for_predictions = float(input("Enter a confidence threshold (decimal ex: 0.004) for making predictions: "))
-    abs_path_to_model_weights = input("Enter the absolute path to the pretrained model weights")
+    abs_path_to_model_weights = input("Enter the absolute path to the pretrained model weights: ")
     
     # create dirs and subdirs
     abs_path_to_baseline_outputs = os.path.join(abs_path_to_baseline_outputs_dir, "baseline_outputs")
     os.makedirs(abs_path_to_baseline_outputs, exist_ok=True)
-    os.makedirs(os.path.join(abs_path_to_baseline_outputs, "prediction_ndpas"))
-    os.makedirs(os.path.join(abs_path_to_baseline_outputs, "reformatted_tiles"))
+    os.makedirs(os.path.join(abs_path_to_baseline_outputs, "prediction_ndpas"), exist_ok=True)
+    os.makedirs(os.path.join(abs_path_to_baseline_outputs, "reformatted_tiles"), exist_ok=True)
 
 
     baseline_config = {
@@ -294,6 +294,6 @@ def save_ndpas(abs_path_to_detections_dir, abs_path_to_ndpa_output_directory, pr
         xml_str = ET.tostring(root, encoding="utf-8")
         pretty_xml = minidom.parseString(xml_str).toprettyxml(indent="  ")
 
-        with open(os.path.join(abs_path_to_ndpa_output_directory, f"{ndpi_sample_name}.ndpi_predictions.ndpa"), "w", encoding="utf-8") as f:
+        with open(os.path.join(abs_path_to_ndpa_output_directory, f"{ndpi_sample_name}.ndpi.ndpa"), "w", encoding="utf-8") as f:
             f.write(pretty_xml)
     return 
