@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # get csv to pd
-annotations_df = pd.read_csv('/projects/dsci435/smithsonian_sp25/data/all_annotations.csv')
+annotations_df = pd.read_csv('../../smithsonian_sp25/data/all_annotations.csv')
 
 
 #############################################################
