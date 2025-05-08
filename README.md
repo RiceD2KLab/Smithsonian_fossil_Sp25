@@ -98,7 +98,7 @@ python setup.py
 The order of the data preprocessing steps is important. The user must preprocess the images first before preprocessing the annotations. 
 1. **Image preprocessing**: run the code below to tile a directory of ndpi images, with tiles stored at the directory specified by the user at setup.
 ```
-cd scripts
+cd scripts/setup
 python image_preprocessing.py
 ```
 The file structure of the tiled ndpi images will look as follows:
