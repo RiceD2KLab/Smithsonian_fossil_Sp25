@@ -91,7 +91,7 @@ To set up the code, please run the following commands. The user will then be pro
 - tile_overlap : Input an integer representing the pixel amount of overlap for the tiles
 ```
 cd scripts
-python setup.py
+python setup/setup.py
 ```
 ## Data Preprocessing
 
